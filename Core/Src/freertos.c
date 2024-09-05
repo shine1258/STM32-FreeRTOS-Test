@@ -144,7 +144,7 @@ void Main_TaskEntry(void const *argument)
   {
     printf("%d %d %d\r\n",
            osThreadGetState(Main_TaskHandle),
-           osThreadGetState(RGBBlue_TaskHandle),
+           RGBBlue_TaskHandle ? osThreadGetState(RGBBlue_TaskHandle) : 15,
            osThreadGetState(RGBWhite_TaskHandle));
 
     osDelay(100);
@@ -203,6 +203,29 @@ void KeyScan_TaskEntry(void const *argument)
   /* Infinite loop */
   for (;;)
   {
+    if (HAL_GPIO_ReadPin(KEY_GPIO_Port, KEY_Pin) == GPIO_PIN_RESET)
+    {
+      osDelay(10); // Debounce delay
+
+      while (HAL_GPIO_ReadPin(KEY_GPIO_Port, KEY_Pin) == GPIO_PIN_RESET)
+      {
+        osDelay(1); // Wait for key release
+      }
+
+      if (RGBBlue_TaskHandle)
+      {
+        osThreadTerminate(RGBBlue_TaskHandle);
+        RGBBlue_TaskHandle = NULL;
+      }
+      else
+      {
+        osThreadDef(RGBBlue_Task, RGBBlue_TaskEntry, osPriorityLow, 0, 128);
+        RGBBlue_TaskHandle = osThreadCreate(osThread(RGBBlue_Task), NULL);
+      }
+
+      osDelay(10); // Debounce delay
+    }
+
     osDelay(1);
   }
   /* USER CODE END KeyScan_TaskEntry */
