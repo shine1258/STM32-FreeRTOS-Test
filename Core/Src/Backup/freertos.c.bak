@@ -1,0 +1,222 @@
+/* USER CODE BEGIN Header */
+/**
+ ******************************************************************************
+ * File Name          : freertos.c
+ * Description        : Code for freertos applications
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2024 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
+/* USER CODE END Header */
+
+/* Includes ------------------------------------------------------------------*/
+#include "FreeRTOS.h"
+#include "task.h"
+#include "main.h"
+#include "cmsis_os.h"
+
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+#include <stdio.h>
+/* USER CODE END Includes */
+
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN PTD */
+
+/* USER CODE END PTD */
+
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+
+/* USER CODE END PD */
+
+/* Private macro -------------------------------------------------------------*/
+/* USER CODE BEGIN PM */
+
+/* USER CODE END PM */
+
+/* Private variables ---------------------------------------------------------*/
+/* USER CODE BEGIN Variables */
+
+/* USER CODE END Variables */
+/* Definitions for Main_Task */
+osThreadId_t Main_TaskHandle;
+const osThreadAttr_t Main_Task_attributes = {
+    .name = "Main_Task",
+    .stack_size = 128 * 4,
+    .priority = (osPriority_t)osPriorityAboveNormal,
+};
+/* Definitions for RGBBlue_Task */
+osThreadId_t RGBBlue_TaskHandle;
+const osThreadAttr_t RGBBlue_Task_attributes = {
+    .name = "RGBBlue_Task",
+    .stack_size = 128 * 4,
+    .priority = (osPriority_t)osPriorityLow,
+};
+/* Definitions for RGBWhite_Task */
+osThreadId_t RGBWhite_TaskHandle;
+const osThreadAttr_t RGBWhite_Task_attributes = {
+    .name = "RGBWhite_Task",
+    .stack_size = 128 * 4,
+    .priority = (osPriority_t)osPriorityLow,
+};
+/* Definitions for KeyScan_Task */
+osThreadId_t KeyScan_TaskHandle;
+const osThreadAttr_t KeyScan_Task_attributes = {
+    .name = "KeyScan_Task",
+    .stack_size = 128 * 4,
+    .priority = (osPriority_t)osPriorityLow,
+};
+
+/* Private function prototypes -----------------------------------------------*/
+/* USER CODE BEGIN FunctionPrototypes */
+
+/* USER CODE END FunctionPrototypes */
+
+void Main_TaskEntry(void *argument);
+void RGBBlue_TaskEntry(void *argument);
+void RGBWhite_TaskEntry(void *argument);
+void KeyScan_TaskEntry(void *argument);
+
+void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
+
+/**
+ * @brief  FreeRTOS initialization
+ * @param  None
+ * @retval None
+ */
+void MX_FREERTOS_Init(void)
+{
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
+  /* USER CODE BEGIN RTOS_MUTEX */
+  /* add mutexes, ... */
+  /* USER CODE END RTOS_MUTEX */
+
+  /* USER CODE BEGIN RTOS_SEMAPHORES */
+  /* add semaphores, ... */
+  /* USER CODE END RTOS_SEMAPHORES */
+
+  /* USER CODE BEGIN RTOS_TIMERS */
+  /* start timers, add new ones, ... */
+  /* USER CODE END RTOS_TIMERS */
+
+  /* USER CODE BEGIN RTOS_QUEUES */
+  /* add queues, ... */
+  /* USER CODE END RTOS_QUEUES */
+
+  /* Create the thread(s) */
+  /* creation of Main_Task */
+  Main_TaskHandle = osThreadNew(Main_TaskEntry, NULL, &Main_Task_attributes);
+
+  /* creation of RGBBlue_Task */
+  RGBBlue_TaskHandle = osThreadNew(RGBBlue_TaskEntry, NULL, &RGBBlue_Task_attributes);
+
+  /* creation of RGBWhite_Task */
+  RGBWhite_TaskHandle = osThreadNew(RGBWhite_TaskEntry, NULL, &RGBWhite_Task_attributes);
+
+  /* creation of KeyScan_Task */
+  KeyScan_TaskHandle = osThreadNew(KeyScan_TaskEntry, NULL, &KeyScan_Task_attributes);
+
+  /* USER CODE BEGIN RTOS_THREADS */
+  /* add threads, ... */
+  /* USER CODE END RTOS_THREADS */
+
+  /* USER CODE BEGIN RTOS_EVENTS */
+  /* add events, ... */
+  /* USER CODE END RTOS_EVENTS */
+}
+
+/* USER CODE BEGIN Header_Main_TaskEntry */
+/**
+ * @brief  Function implementing the Main_Task thread.
+ * @param  argument: Not used
+ * @retval None
+ */
+/* USER CODE END Header_Main_TaskEntry */
+void Main_TaskEntry(void *argument)
+{
+  /* USER CODE BEGIN Main_TaskEntry */
+  /* Infinite loop */
+  for (;;)
+  {
+    printf("%d %d %d\r\n",
+           osThreadGetState(Main_TaskHandle),
+           osThreadGetState(RGBBlue_TaskHandle),
+           osThreadGetState(RGBWhite_TaskHandle));
+
+    osDelay(100);
+  }
+  /* USER CODE END Main_TaskEntry */
+}
+
+/* USER CODE BEGIN Header_RGBBlue_TaskEntry */
+/**
+ * @brief Function implementing the RGBBlue_Task thread.
+ * @param argument: Not used
+ * @retval None
+ */
+/* USER CODE END Header_RGBBlue_TaskEntry */
+void RGBBlue_TaskEntry(void *argument)
+{
+  /* USER CODE BEGIN RGBBlue_TaskEntry */
+  /* Infinite loop */
+  for (;;)
+  {
+    osDelay(500);
+    HAL_GPIO_TogglePin(RGB_BLUE_GPIO_Port, RGB_BLUE_Pin);
+  }
+  /* USER CODE END RGBBlue_TaskEntry */
+}
+
+/* USER CODE BEGIN Header_RGBWhite_TaskEntry */
+/**
+ * @brief Function implementing the RGBWhite_Task thread.
+ * @param argument: Not used
+ * @retval None
+ */
+/* USER CODE END Header_RGBWhite_TaskEntry */
+void RGBWhite_TaskEntry(void *argument)
+{
+  /* USER CODE BEGIN RGBWhite_TaskEntry */
+  /* Infinite loop */
+  for (;;)
+  {
+    osDelay(1000);
+    HAL_GPIO_TogglePin(RGB_WHITE_GPIO_Port, RGB_WHITE_Pin);
+  }
+  /* USER CODE END RGBWhite_TaskEntry */
+}
+
+/* USER CODE BEGIN Header_KeyScan_TaskEntry */
+/**
+ * @brief Function implementing the KeyScan_Task thread.
+ * @param argument: Not used
+ * @retval None
+ */
+/* USER CODE END Header_KeyScan_TaskEntry */
+void KeyScan_TaskEntry(void *argument)
+{
+  /* USER CODE BEGIN KeyScan_TaskEntry */
+  /* Infinite loop */
+  for (;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END KeyScan_TaskEntry */
+}
+
+/* Private application code --------------------------------------------------*/
+/* USER CODE BEGIN Application */
+
+/* USER CODE END Application */
