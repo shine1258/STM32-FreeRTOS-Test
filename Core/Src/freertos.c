@@ -139,15 +139,34 @@ void MX_FREERTOS_Init(void)
 void Main_TaskEntry(void const *argument)
 {
   /* USER CODE BEGIN Main_TaskEntry */
+  // uint32_t num = 0;
   /* Infinite loop */
   for (;;)
   {
-    printf("%d %d %d\r\n",
-           osThreadGetState(Main_TaskHandle),
-           RGBBlue_TaskHandle ? osThreadGetState(RGBBlue_TaskHandle) : 15,
-           osThreadGetState(RGBWhite_TaskHandle));
+    // printf("%d %d %d\r\n",
+    //        osThreadGetState(Main_TaskHandle),
+    //        // RGBBlue_TaskHandle ? osThreadGetState(RGBBlue_TaskHandle) : 15,
+    //        osThreadGetState(RGBBlue_TaskHandle),
+    //        osThreadGetState(RGBWhite_TaskHandle));
 
-    osDelay(100);
+    // num++;
+
+    // if (num == 5)
+    // {
+
+    //   printf("Disable interrupt\r\n");
+    //   portDISABLE_INTERRUPTS();
+
+    //   while (++num <= 10000000)
+    //     ;
+
+    //   printf("Enable interrupt\r\n");
+    //   portENABLE_INTERRUPTS();
+
+    //   num = 0;
+    // }
+
+    osDelay(1000);
   }
   /* USER CODE END Main_TaskEntry */
 }
@@ -166,7 +185,7 @@ void RGBBlue_TaskEntry(void const *argument)
   for (;;)
   {
     osDelay(500);
-    HAL_GPIO_TogglePin(RGB_BLUE_GPIO_Port, RGB_BLUE_Pin);
+    // HAL_GPIO_TogglePin(RGB_BLUE_GPIO_Port, RGB_BLUE_Pin);
   }
   /* USER CODE END RGBBlue_TaskEntry */
 }
@@ -185,7 +204,7 @@ void RGBWhite_TaskEntry(void const *argument)
   for (;;)
   {
     osDelay(1000);
-    HAL_GPIO_TogglePin(RGB_WHITE_GPIO_Port, RGB_WHITE_Pin);
+    // HAL_GPIO_TogglePin(RGB_WHITE_GPIO_Port, RGB_WHITE_Pin);
   }
   /* USER CODE END RGBWhite_TaskEntry */
 }
@@ -212,16 +231,18 @@ void KeyScan_TaskEntry(void const *argument)
         osDelay(1); // Wait for key release
       }
 
-      if (RGBBlue_TaskHandle)
-      {
-        osThreadTerminate(RGBBlue_TaskHandle);
-        RGBBlue_TaskHandle = NULL;
-      }
-      else
-      {
-        osThreadDef(RGBBlue_Task, RGBBlue_TaskEntry, osPriorityLow, 0, 128);
-        RGBBlue_TaskHandle = osThreadCreate(osThread(RGBBlue_Task), NULL);
-      }
+      // if (RGBBlue_TaskHandle)
+      // {
+      //   osThreadTerminate(RGBBlue_TaskHandle);
+      //   RGBBlue_TaskHandle = NULL;
+      // }
+      // else
+      // {
+      //   osThreadDef(RGBBlue_Task, RGBBlue_TaskEntry, osPriorityLow, 0, 128);
+      //   RGBBlue_TaskHandle = osThreadCreate(osThread(RGBBlue_Task), NULL);
+      // }
+
+      // osThreadSuspend(RGBBlue_TaskHandle);
 
       osDelay(10); // Debounce delay
     }
@@ -233,5 +254,11 @@ void KeyScan_TaskEntry(void const *argument)
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
-
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  if (GPIO_Pin == Sensor_Pin)
+  {
+    // osThreadResume(RGBBlue_TaskHandle);
+  }
+}
 /* USER CODE END Application */
