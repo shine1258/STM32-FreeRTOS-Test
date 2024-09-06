@@ -46,6 +46,11 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
 
+List_t list;
+ListItem_t listItem1;
+ListItem_t listItem2;
+ListItem_t listItem3;
+
 /* USER CODE END Variables */
 osThreadId Main_TaskHandle;
 osThreadId RGBBlue_TaskHandle;
@@ -139,32 +144,40 @@ void MX_FREERTOS_Init(void)
 void Main_TaskEntry(void const *argument)
 {
   /* USER CODE BEGIN Main_TaskEntry */
-  // uint32_t num = 0;
+  UNUSED(argument);
+
+  printf("初始化列表和列表项\r\n");
+
+  vListInitialise(&list);
+  vListInitialiseItem(&listItem1);
+  vListInitialiseItem(&listItem2);
+  vListInitialiseItem(&listItem3);
+
+  listItem1.xItemValue = 40;
+  listItem2.xItemValue = 60;
+  listItem3.xItemValue = 50;
+
+  printf("list: %p\r\n", (void *)&list);
+  printf("list->pxIndex: %p\r\n", (void *)list.pxIndex);
+  printf("list->xListEnd: %p\r\n", (void *)&list.xListEnd);
+  printf("listItem1: %p\r\n", (void *)&listItem1);
+  printf("listItem2: %p\r\n", (void *)&listItem2);
+  printf("listItem3: %p\r\n", (void *)&listItem3);
+
+  printf("\r\n");
+
+  printf("将列表项1插入到列表中\r\n");
+
+  vListInsert(&list, &listItem1);
+
+  printf("list->xListEnd->pxNext: %p\r\n", (void *)list.xListEnd.pxNext);
+  printf("listItem1->pxNext: %p\r\n", (void *)listItem1.pxNext);
+  printf("list->xListEnd->pxPrevious: %p\r\n", (void *)list.xListEnd.pxPrevious);
+  printf("listItem1->pxPrevious: %p\r\n", (void *)listItem1.pxPrevious);
+
   /* Infinite loop */
   for (;;)
   {
-    // printf("%d %d %d\r\n",
-    //        osThreadGetState(Main_TaskHandle),
-    //        // RGBBlue_TaskHandle ? osThreadGetState(RGBBlue_TaskHandle) : 15,
-    //        osThreadGetState(RGBBlue_TaskHandle),
-    //        osThreadGetState(RGBWhite_TaskHandle));
-
-    // num++;
-
-    // if (num == 5)
-    // {
-
-    //   printf("Disable interrupt\r\n");
-    //   portDISABLE_INTERRUPTS();
-
-    //   while (++num <= 10000000)
-    //     ;
-
-    //   printf("Enable interrupt\r\n");
-    //   portENABLE_INTERRUPTS();
-
-    //   num = 0;
-    // }
 
     osDelay(1000);
   }
@@ -181,6 +194,7 @@ void Main_TaskEntry(void const *argument)
 void RGBBlue_TaskEntry(void const *argument)
 {
   /* USER CODE BEGIN RGBBlue_TaskEntry */
+  UNUSED(argument);
   /* Infinite loop */
   for (;;)
   {
@@ -200,6 +214,7 @@ void RGBBlue_TaskEntry(void const *argument)
 void RGBWhite_TaskEntry(void const *argument)
 {
   /* USER CODE BEGIN RGBWhite_TaskEntry */
+  UNUSED(argument);
   /* Infinite loop */
   for (;;)
   {
@@ -219,6 +234,7 @@ void RGBWhite_TaskEntry(void const *argument)
 void KeyScan_TaskEntry(void const *argument)
 {
   /* USER CODE BEGIN KeyScan_TaskEntry */
+  UNUSED(argument);
   /* Infinite loop */
   for (;;)
   {
