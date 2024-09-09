@@ -46,6 +46,11 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
 
+// List_t list;
+// ListItem_t listItem1;
+// ListItem_t listItem2;
+// ListItem_t listItem3;
+
 /* USER CODE END Variables */
 osThreadId Main_TaskHandle;
 osThreadId RGBBlue_TaskHandle;
@@ -67,6 +72,9 @@ void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 /* GetIdleTaskMemory prototype (linked to static allocation support) */
 void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize);
 
+/* GetTimerTaskMemory prototype (linked to static allocation support) */
+void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize);
+
 /* USER CODE BEGIN GET_IDLE_TASK_MEMORY */
 static StaticTask_t xIdleTaskTCBBuffer;
 static StackType_t xIdleStack[configMINIMAL_STACK_SIZE];
@@ -79,6 +87,19 @@ void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackTyp
   /* place for user code */
 }
 /* USER CODE END GET_IDLE_TASK_MEMORY */
+
+/* USER CODE BEGIN GET_TIMER_TASK_MEMORY */
+static StaticTask_t xTimerTaskTCBBuffer;
+static StackType_t xTimerStack[configTIMER_TASK_STACK_DEPTH];
+
+void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize)
+{
+  *ppxTimerTaskTCBBuffer = &xTimerTaskTCBBuffer;
+  *ppxTimerTaskStackBuffer = &xTimerStack[0];
+  *pulTimerTaskStackSize = configTIMER_TASK_STACK_DEPTH;
+  /* place for user code */
+}
+/* USER CODE END GET_TIMER_TASK_MEMORY */
 
 /**
  * @brief  FreeRTOS initialization
@@ -139,16 +160,106 @@ void MX_FREERTOS_Init(void)
 void Main_TaskEntry(void const *argument)
 {
   /* USER CODE BEGIN Main_TaskEntry */
+  UNUSED(argument);
+
+#pragma region
+  // printf("初始化列表和列表项\r\n");
+
+  // vListInitialise(&list);
+  // vListInitialiseItem(&listItem1);
+  // vListInitialiseItem(&listItem2);
+  // vListInitialiseItem(&listItem3);
+
+  // listItem1.xItemValue = 40;
+  // listItem2.xItemValue = 60;
+  // listItem3.xItemValue = 50;
+
+  // printf("list: %p\r\n", (void *)&list);
+  // printf("list->pxIndex: %p\r\n", (void *)list.pxIndex);
+  // printf("list->xListEnd: %p\r\n", (void *)&list.xListEnd);
+  // printf("listItem1: %p\r\n", (void *)&listItem1);
+  // printf("listItem2: %p\r\n", (void *)&listItem2);
+  // printf("listItem3: %p\r\n", (void *)&listItem3);
+  // printf("\r\n");
+
+  // printf("将列表项1插入到列表中\r\n");
+
+  // vListInsert(&list, &listItem1);
+
+  // printf("list->xListEnd->pxNext: %p\r\n", (void *)list.xListEnd.pxNext);
+  // printf("listItem1->pxNext: %p\r\n", (void *)listItem1.pxNext);
+  // printf("list->xListEnd->pxPrevious: %p\r\n", (void *)list.xListEnd.pxPrevious);
+  // printf("listItem1->pxPrevious: %p\r\n", (void *)listItem1.pxPrevious);
+  // printf("\r\n");
+
+  // printf("将列表项2插入到列表中\r\n");
+
+  // vListInsert(&list, &listItem2);
+
+  // printf("list->xListEnd->pxNext: %p\r\n", (void *)list.xListEnd.pxNext);
+  // printf("listItem1->pxNext: %p\r\n", (void *)listItem1.pxNext);
+  // printf("listItem2->pxNext: %p\r\n", (void *)listItem2.pxNext);
+  // printf("list->xListEnd->pxPrevious: %p\r\n", (void *)list.xListEnd.pxPrevious);
+  // printf("listItem1->pxPrevious: %p\r\n", (void *)listItem1.pxPrevious);
+  // printf("listItem2->pxPrevious: %p\r\n", (void *)listItem2.pxPrevious);
+  // printf("\r\n");
+
+  // printf("将列表项3插入到列表中\r\n");
+
+  // vListInsert(&list, &listItem3);
+
+  // printf("list->xListEnd->pxNext: %p\r\n", (void *)list.xListEnd.pxNext);
+  // printf("listItem1->pxNext: %p\r\n", (void *)listItem1.pxNext);
+  // printf("listItem2->pxNext: %p\r\n", (void *)listItem2.pxNext);
+  // printf("listItem3->pxNext: %p\r\n", (void *)listItem3.pxNext);
+  // printf("list->xListEnd->pxPrevious: %p\r\n", (void *)list.xListEnd.pxPrevious);
+  // printf("listItem1->pxPrevious: %p\r\n", (void *)listItem1.pxPrevious);
+  // printf("listItem2->pxPrevious: %p\r\n", (void *)listItem2.pxPrevious);
+  // printf("listItem3->pxPrevious: %p\r\n", (void *)listItem3.pxPrevious);
+  // printf("\r\n");
+
+  // printf("从列表中移除列表项2\r\n");
+
+  // uxListRemove(&listItem2);
+
+  // printf("list->xListEnd->pxNext: %p\r\n", (void *)list.xListEnd.pxNext);
+  // printf("listItem1->pxNext: %p\r\n", (void *)listItem1.pxNext);
+  // printf("listItem3->pxNext: %p\r\n", (void *)listItem3.pxNext);
+  // printf("list->xListEnd->pxPrevious: %p\r\n", (void *)list.xListEnd.pxPrevious);
+  // printf("listItem1->pxPrevious: %p\r\n", (void *)listItem1.pxPrevious);
+  // printf("listItem3->pxPrevious: %p\r\n", (void *)listItem3.pxPrevious);
+  // printf("\r\n");
+
+  // printf("将列表项2插入到列表末尾\r\n");
+
+  // list.pxIndex = &listItem1;
+  // vListInsertEnd(&list, &listItem2);
+
+  // printf("list->xListEnd->pxNext: %p\r\n", (void *)list.xListEnd.pxNext);
+  // printf("listItem1->pxNext: %p\r\n", (void *)listItem1.pxNext);
+  // printf("listItem2->pxNext: %p\r\n", (void *)listItem2.pxNext);
+  // printf("listItem3->pxNext: %p\r\n", (void *)listItem3.pxNext);
+  // printf("list->xListEnd->pxPrevious: %p\r\n", (void *)list.xListEnd.pxPrevious);
+  // printf("listItem1->pxPrevious: %p\r\n", (void *)listItem1.pxPrevious);
+  // printf("listItem2->pxPrevious: %p\r\n", (void *)listItem2.pxPrevious);
+  // printf("listItem3->pxPrevious: %p\r\n", (void *)listItem3.pxPrevious);
+  // printf("\r\n");
+#pragma endregion
+
+  osThreadSetPriority(NULL, osPriorityHigh);
+  osThreadSetPriority(RGBBlue_TaskHandle, osPriorityBelowNormal);
+  osThreadSetPriority(RGBWhite_TaskHandle, osPriorityBelowNormal);
+
+  printf("Priority of Main_Task: %d\r\n", osThreadGetPriority(NULL));
+  printf("Priority of RGBBlue_Task: %d\r\n", osThreadGetPriority(RGBBlue_TaskHandle));
+  printf("Priority of RGBWhite_Task: %d\r\n", osThreadGetPriority(RGBWhite_TaskHandle));
+
+  printf("Nums of tasks: %ld\r\n", uxTaskGetNumberOfTasks());
+
   /* Infinite loop */
   for (;;)
   {
-    printf("%d %d %d\r\n",
-           osThreadGetState(Main_TaskHandle),
-           // RGBBlue_TaskHandle ? osThreadGetState(RGBBlue_TaskHandle) : 15,
-           osThreadGetState(RGBBlue_TaskHandle),
-           osThreadGetState(RGBWhite_TaskHandle));
-
-    osDelay(100);
+    osDelay(1000);
   }
   /* USER CODE END Main_TaskEntry */
 }
@@ -163,6 +274,7 @@ void Main_TaskEntry(void const *argument)
 void RGBBlue_TaskEntry(void const *argument)
 {
   /* USER CODE BEGIN RGBBlue_TaskEntry */
+  UNUSED(argument);
   /* Infinite loop */
   for (;;)
   {
@@ -182,6 +294,7 @@ void RGBBlue_TaskEntry(void const *argument)
 void RGBWhite_TaskEntry(void const *argument)
 {
   /* USER CODE BEGIN RGBWhite_TaskEntry */
+  UNUSED(argument);
   /* Infinite loop */
   for (;;)
   {
@@ -201,6 +314,7 @@ void RGBWhite_TaskEntry(void const *argument)
 void KeyScan_TaskEntry(void const *argument)
 {
   /* USER CODE BEGIN KeyScan_TaskEntry */
+  UNUSED(argument);
   /* Infinite loop */
   for (;;)
   {
@@ -224,7 +338,7 @@ void KeyScan_TaskEntry(void const *argument)
       //   RGBBlue_TaskHandle = osThreadCreate(osThread(RGBBlue_Task), NULL);
       // }
 
-      osThreadSuspend(RGBBlue_TaskHandle);
+      // osThreadSuspend(RGBBlue_TaskHandle);
 
       osDelay(10); // Debounce delay
     }
@@ -240,7 +354,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
   if (GPIO_Pin == Sensor_Pin)
   {
-    osThreadResume(RGBBlue_TaskHandle);
+    // osThreadResume(RGBBlue_TaskHandle);
   }
 }
 /* USER CODE END Application */
