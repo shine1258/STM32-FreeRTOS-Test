@@ -26,6 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+
 #include "stm32f1xx_hal_tim.h"
 /* USER CODE END Includes */
 
@@ -47,7 +48,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+uint64_t runTimeTicks;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -95,7 +96,8 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-  __HAL_TIM_CLEAR_FLAG(&htim2, TIM_FLAG_UPDATE); // 修复复位后立即进入定时器中断的问题
+  __HAL_TIM_CLEAR_FLAG(&htim2,
+                       TIM_FLAG_UPDATE); // 修复复位后立即进入定时器中断的问题
   __HAL_TIM_CLEAR_FLAG(&htim3, TIM_FLAG_UPDATE);
   HAL_TIM_Base_Start_IT(&htim2);
   HAL_TIM_Base_Start_IT(&htim3);
@@ -161,7 +163,10 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+unsigned long getRunTimeCounterValue(void)
+{
+  return runTimeTicks;
+}
 /* USER CODE END 4 */
 
 /**
@@ -183,11 +188,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 1 */
   else if (htim->Instance == TIM2)
   {
-    HAL_GPIO_TogglePin(RGB_BLUE_GPIO_Port, RGB_BLUE_Pin);
-  }
-  else if (htim->Instance == TIM3)
-  {
-    HAL_GPIO_TogglePin(RGB_WHITE_GPIO_Port, RGB_WHITE_Pin);
+    runTimeTicks++;
   }
   /* USER CODE END Callback 1 */
 }
@@ -218,8 +219,9 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+  /* User can add his own implementation to report the file name and line
+     number, ex: printf("Wrong parameters value: file %s on line %d\r\n", file,
+     line) */
   printf("ASSERT! File: %s, Line: %ld\r\n", file, line);
   taskDISABLE_INTERRUPTS();
   for (;;)
