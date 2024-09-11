@@ -19,13 +19,17 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "FreeRTOS.h"
-#include "task.h"
-#include "main.h"
 #include "cmsis_os.h"
+#include "main.h"
+#include "task.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
+#include "Common.h"
+#include "Key.h"
 #include <stdio.h>
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,31 +50,58 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
 
-char buffer[512];
+char buffer[50] = { "fdsagfhdshdshdhdffdff" };
 
 /* USER CODE END Variables */
-osThreadId Main_TaskHandle;
-osThreadId RGBBlue_TaskHandle;
-osThreadId RGBWhite_TaskHandle;
-osThreadId KeyScan_TaskHandle;
+/* Definitions for Main_Task */
+osThreadId_t Main_TaskHandle;
+const osThreadAttr_t Main_Task_attributes = {
+    .name = "Main_Task",
+    .stack_size = 256 * 4,
+    .priority = (osPriority_t)osPriorityAboveNormal,
+};
+/* Definitions for QueueR_Task */
+osThreadId_t QueueR_TaskHandle;
+const osThreadAttr_t QueueR_Task_attributes = {
+    .name = "QueueR_Task",
+    .stack_size = 256 * 4,
+    .priority = (osPriority_t)osPriorityLow,
+};
+/* Definitions for QueueRB_Task */
+osThreadId_t QueueRB_TaskHandle;
+const osThreadAttr_t QueueRB_Task_attributes = {
+    .name = "QueueRB_Task",
+    .stack_size = 512 * 4,
+    .priority = (osPriority_t)osPriorityLow,
+};
+/* Definitions for KeyScan_Task */
+osThreadId_t KeyScan_TaskHandle;
+const osThreadAttr_t KeyScan_Task_attributes = {
+    .name = "KeyScan_Task",
+    .stack_size = 256 * 4,
+    .priority = (osPriority_t)osPriorityLow,
+};
+/* Definitions for queue */
+osMessageQueueId_t queueHandle;
+const osMessageQueueAttr_t queue_attributes = {
+    .name = "queue"
+};
+/* Definitions for bigItemQueue */
+osMessageQueueId_t bigItemQueueHandle;
+const osMessageQueueAttr_t bigItemQueue_attributes = {
+    .name = "bigItemQueue"
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
-
 /* USER CODE END FunctionPrototypes */
 
-void Main_TaskEntry(void const *argument);
-void RGBBlue_TaskEntry(void const *argument);
-void RGBWhite_TaskEntry(void const *argument);
-void KeyScan_TaskEntry(void const *argument);
+void Main_TaskEntry(void* argument);
+void QueueR_TaskEntry(void* argument);
+void QueueRB_TaskEntry(void* argument);
+void KeyScan_TaskEntry(void* argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
-
-/* GetIdleTaskMemory prototype (linked to static allocation support) */
-void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize);
-
-/* GetTimerTaskMemory prototype (linked to static allocation support) */
-void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize);
 
 /* Hook prototypes */
 void configureTimerForRunTimeStats(void);
@@ -84,35 +115,9 @@ __weak void configureTimerForRunTimeStats(void)
 
 __weak unsigned long getRunTimeCounterValue(void)
 {
-  return 0;
+    return 0;
 }
 /* USER CODE END 1 */
-
-/* USER CODE BEGIN GET_IDLE_TASK_MEMORY */
-static StaticTask_t xIdleTaskTCBBuffer;
-static StackType_t xIdleStack[configMINIMAL_STACK_SIZE];
-
-void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize)
-{
-  *ppxIdleTaskTCBBuffer = &xIdleTaskTCBBuffer;
-  *ppxIdleTaskStackBuffer = &xIdleStack[0];
-  *pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
-  /* place for user code */
-}
-/* USER CODE END GET_IDLE_TASK_MEMORY */
-
-/* USER CODE BEGIN GET_TIMER_TASK_MEMORY */
-static StaticTask_t xTimerTaskTCBBuffer;
-static StackType_t xTimerStack[configTIMER_TASK_STACK_DEPTH];
-
-void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize)
-{
-  *ppxTimerTaskTCBBuffer = &xTimerTaskTCBBuffer;
-  *ppxTimerTaskStackBuffer = &xTimerStack[0];
-  *pulTimerTaskStackSize = configTIMER_TASK_STACK_DEPTH;
-  /* place for user code */
-}
-/* USER CODE END GET_TIMER_TASK_MEMORY */
 
 /**
  * @brief  FreeRTOS initialization
@@ -121,46 +126,63 @@ void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackT
  */
 void MX_FREERTOS_Init(void)
 {
-  /* USER CODE BEGIN Init */
+    /* USER CODE BEGIN Init */
 
-  /* USER CODE END Init */
+    /* USER CODE END Init */
 
-  /* USER CODE BEGIN RTOS_MUTEX */
-  /* add mutexes, ... */
-  /* USER CODE END RTOS_MUTEX */
+    /* USER CODE BEGIN RTOS_MUTEX */
+    /* add mutexes, ... */
+    /* USER CODE END RTOS_MUTEX */
 
-  /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
-  /* USER CODE END RTOS_SEMAPHORES */
+    /* USER CODE BEGIN RTOS_SEMAPHORES */
+    /* add semaphores, ... */
+    /* USER CODE END RTOS_SEMAPHORES */
 
-  /* USER CODE BEGIN RTOS_TIMERS */
-  /* start timers, add new ones, ... */
-  /* USER CODE END RTOS_TIMERS */
+    /* USER CODE BEGIN RTOS_TIMERS */
+    /* start timers, add new ones, ... */
+    /* USER CODE END RTOS_TIMERS */
 
-  /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
-  /* USER CODE END RTOS_QUEUES */
+    /* Create the queue(s) */
+    /* creation of queue */
+    queueHandle = osMessageQueueNew(2, sizeof(int8_t), &queue_attributes);
 
-  /* Create the thread(s) */
-  /* definition and creation of Main_Task */
-  osThreadDef(Main_Task, Main_TaskEntry, osPriorityAboveNormal, 0, 256);
-  Main_TaskHandle = osThreadCreate(osThread(Main_Task), NULL);
+    /* creation of bigItemQueue */
+    bigItemQueueHandle = osMessageQueueNew(1, sizeof(char*), &bigItemQueue_attributes);
 
-  /* definition and creation of RGBBlue_Task */
-  osThreadDef(RGBBlue_Task, RGBBlue_TaskEntry, osPriorityLow, 0, 128);
-  RGBBlue_TaskHandle = osThreadCreate(osThread(RGBBlue_Task), NULL);
+    /* USER CODE BEGIN RTOS_QUEUES */
+    /* add queues, ... */
 
-  /* definition and creation of RGBWhite_Task */
-  osThreadDef(RGBWhite_Task, RGBWhite_TaskEntry, osPriorityLow, 0, 128);
-  RGBWhite_TaskHandle = osThreadCreate(osThread(RGBWhite_Task), NULL);
+    MALLOC_FAILED_CHECK(queueHandle);
+    MALLOC_FAILED_CHECK(bigItemQueueHandle);
 
-  /* definition and creation of KeyScan_Task */
-  osThreadDef(KeyScan_Task, KeyScan_TaskEntry, osPriorityLow, 0, 128);
-  KeyScan_TaskHandle = osThreadCreate(osThread(KeyScan_Task), NULL);
+    /* USER CODE END RTOS_QUEUES */
 
-  /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
-  /* USER CODE END RTOS_THREADS */
+    /* Create the thread(s) */
+    /* creation of Main_Task */
+    Main_TaskHandle = osThreadNew(Main_TaskEntry, NULL, &Main_Task_attributes);
+
+    /* creation of QueueR_Task */
+    QueueR_TaskHandle = osThreadNew(QueueR_TaskEntry, NULL, &QueueR_Task_attributes);
+
+    /* creation of QueueRB_Task */
+    QueueRB_TaskHandle = osThreadNew(QueueRB_TaskEntry, NULL, &QueueRB_Task_attributes);
+
+    /* creation of KeyScan_Task */
+    KeyScan_TaskHandle = osThreadNew(KeyScan_TaskEntry, NULL, &KeyScan_Task_attributes);
+
+    /* USER CODE BEGIN RTOS_THREADS */
+    /* add threads, ... */
+
+    MALLOC_FAILED_CHECK(Main_TaskHandle);
+    MALLOC_FAILED_CHECK(QueueR_TaskHandle);
+    MALLOC_FAILED_CHECK(QueueRB_TaskHandle);
+    MALLOC_FAILED_CHECK(KeyScan_TaskHandle);
+
+    /* USER CODE END RTOS_THREADS */
+
+    /* USER CODE BEGIN RTOS_EVENTS */
+    /* add events, ... */
+    /* USER CODE END RTOS_EVENTS */
 }
 
 /* USER CODE BEGIN Header_Main_TaskEntry */
@@ -170,66 +192,71 @@ void MX_FREERTOS_Init(void)
  * @retval None
  */
 /* USER CODE END Header_Main_TaskEntry */
-void Main_TaskEntry(void const *argument)
+void Main_TaskEntry(void* argument)
 {
-  /* USER CODE BEGIN Main_TaskEntry */
-  UNUSED(argument);
+    /* USER CODE BEGIN Main_TaskEntry */
+    UNUSED(argument);
 
-  /* Infinite loop */
+    /* Infinite loop */
 
-  for (;;)
-  {
-    osDelay(1000);
-  }
-  /* USER CODE END Main_TaskEntry */
+    for (;;) {
+        printf("Stack high water mark of each task:\r\n");
+
+        UBaseType_t numOfTasks = uxTaskGetNumberOfTasks();
+        TaskStatus_t* taskStatusArr = pvPortMalloc(numOfTasks * sizeof(TaskStatus_t));
+        MALLOC_FAILED_CHECK(taskStatusArr);
+        uxTaskGetSystemState(taskStatusArr, numOfTasks, NULL);
+
+        for (uint8_t i = 0; i < numOfTasks; i++) {
+            printf("%s: %d\r\n", taskStatusArr[i].pcTaskName, taskStatusArr[i].usStackHighWaterMark);
+        }
+
+        vPortFree(taskStatusArr);
+
+        printf("\r\n");
+        osDelay(5000);
+    }
+    /* USER CODE END Main_TaskEntry */
 }
 
-/* USER CODE BEGIN Header_RGBBlue_TaskEntry */
+/* USER CODE BEGIN Header_QueueR_TaskEntry */
 /**
- * @brief Function implementing the RGBBlue_Task thread.
+ * @brief Function implementing the QueueR_Task thread.
  * @param argument: Not used
  * @retval None
  */
-/* USER CODE END Header_RGBBlue_TaskEntry */
-void RGBBlue_TaskEntry(void const *argument)
+/* USER CODE END Header_QueueR_TaskEntry */
+void QueueR_TaskEntry(void* argument)
 {
-  /* USER CODE BEGIN RGBBlue_TaskEntry */
-  UNUSED(argument);
-
-  uint32_t xLastWakeTime = osKernelSysTick();
-
-  /* Infinite loop */
-  for (;;)
-  {
-    HAL_GPIO_TogglePin(RGB_BLUE_GPIO_Port, RGB_BLUE_Pin);
-    printf("RGB Blue Task\r\n");
-    osDelayUntil(&xLastWakeTime, 500);
-  }
-  /* USER CODE END RGBBlue_TaskEntry */
+    /* USER CODE BEGIN QueueR_TaskEntry */
+    UNUSED(argument);
+    int8_t keyNum;
+    /* Infinite loop */
+    for (;;) {
+        osMessageQueueGet(queueHandle, &keyNum, NULL, osWaitForever);
+        printf("QueueR received key %d\r\n", keyNum);
+    }
+    /* USER CODE END QueueR_TaskEntry */
 }
 
-/* USER CODE BEGIN Header_RGBWhite_TaskEntry */
+/* USER CODE BEGIN Header_QueueRB_TaskEntry */
 /**
- * @brief Function implementing the RGBWhite_Task thread.
+ * @brief Function implementing the QueueRB thread.
  * @param argument: Not used
  * @retval None
  */
-/* USER CODE END Header_RGBWhite_TaskEntry */
-void RGBWhite_TaskEntry(void const *argument)
+/* USER CODE END Header_QueueRB_TaskEntry */
+void QueueRB_TaskEntry(void* argument)
 {
-  /* USER CODE BEGIN RGBWhite_TaskEntry */
-  UNUSED(argument);
-
-  uint32_t xLastWakeTime = osKernelSysTick();
-
-  /* Infinite loop */
-  for (;;)
-  {
-    HAL_GPIO_TogglePin(RGB_WHITE_GPIO_Port, RGB_WHITE_Pin);
-    printf("RGB White Task\r\n");
-    osDelayUntil(&xLastWakeTime, 1000);
-  }
-  /* USER CODE END RGBWhite_TaskEntry */
+    /* USER CODE BEGIN QueueRB_TaskEntry */
+    UNUSED(argument);
+    char* pBuffer;
+    /* Infinite loop */
+    for (;;) {
+        osMessageQueueGet(bigItemQueueHandle, &pBuffer, NULL, osWaitForever);
+        printf("QueueRB received: %s\r\n", pBuffer);
+    }
+    /* USER CODE END QueueRB_TaskEntry */
 }
 
 /* USER CODE BEGIN Header_KeyScan_TaskEntry */
@@ -239,39 +266,34 @@ void RGBWhite_TaskEntry(void const *argument)
  * @retval None
  */
 /* USER CODE END Header_KeyScan_TaskEntry */
-void KeyScan_TaskEntry(void const *argument)
+void KeyScan_TaskEntry(void* argument)
 {
-  /* USER CODE BEGIN KeyScan_TaskEntry */
-  UNUSED(argument);
-  /* Infinite loop */
-  for (;;)
-  {
-    if (HAL_GPIO_ReadPin(KEY_GPIO_Port, KEY_Pin) == GPIO_PIN_RESET)
-    {
-      osDelay(10); // Debounce delay
+    /* USER CODE BEGIN KeyScan_TaskEntry */
+    UNUSED(argument);
+    /* Infinite loop */
+    for (;;) {
+        int8_t keyNum = KeyScan();
 
-      while (HAL_GPIO_ReadPin(KEY_GPIO_Port, KEY_Pin) == GPIO_PIN_RESET)
-      {
-        osDelay(1); // Wait for key release
-      }
+        if (keyNum != -1) {
+            printf("Key %d pressed\r\n", keyNum);
 
-      printf("Key pressed\r\n");
+            switch (keyNum) {
+            case 1:
+                osMessageQueuePut(queueHandle, &keyNum, 0, osWaitForever);
+                break;
+            case 2:
+                osMessageQueuePut(bigItemQueueHandle, &buffer, 0, osWaitForever);
+                break;
+            default:
+                break;
+            }
+        }
 
-      osDelay(10); // Debounce delay
+        osDelay(10);
     }
-
-    osDelay(1);
-  }
-  /* USER CODE END KeyScan_TaskEntry */
+    /* USER CODE END KeyScan_TaskEntry */
 }
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
-  if (GPIO_Pin == Sensor_Pin)
-  {
-    // osThreadResume(RGBBlue_TaskHandle);
-  }
-}
 /* USER CODE END Application */

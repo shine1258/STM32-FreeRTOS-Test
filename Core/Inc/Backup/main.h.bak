@@ -53,7 +53,6 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -63,9 +62,8 @@ void Error_Handler(void);
 #define RGB_WHITE_GPIO_Port GPIOA
 #define KEY_Pin GPIO_PIN_0
 #define KEY_GPIO_Port GPIOB
-#define Sensor_Pin GPIO_PIN_14
-#define Sensor_GPIO_Port GPIOB
-#define Sensor_EXTI_IRQn EXTI15_10_IRQn
+#define KEY2_Pin GPIO_PIN_10
+#define KEY2_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

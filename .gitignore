@@ -1,6 +1,0 @@
-# Ignore build output
-build/
-
-# Ignore system files
-Thumbs.db
-.DS_Store
