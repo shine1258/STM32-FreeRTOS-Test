@@ -14,7 +14,7 @@ const struct {
 
 /// @brief 扫描按键
 /// @return 按键编号, -1表示没有按键按下
-int8_t KeyScan()
+int8_t KeyScan(void)
 {
     int8_t keyNum = -1;
 

@@ -3,6 +3,6 @@
 
 #include "stdint.h"
 
-int8_t KeyScan();
+int8_t KeyScan(void);
 
 #endif

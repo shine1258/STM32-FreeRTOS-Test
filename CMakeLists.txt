@@ -50,6 +50,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     User/Src/Key.c
     User/Src/Common.c
+    User/Src/Serial.c
 )
 
 # Add include paths

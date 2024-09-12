@@ -25,6 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "Serial.h"
 #include <stdio.h>
 /* USER CODE END Includes */
 
@@ -94,6 +95,8 @@ int main(void)
     MX_TIM2_Init();
     MX_TIM3_Init();
     /* USER CODE BEGIN 2 */
+
+    Serial_Init();
 
     // 修复复位后立即进入定时器中断的问题
     __HAL_TIM_CLEAR_FLAG(&htim2, TIM_FLAG_UPDATE);
