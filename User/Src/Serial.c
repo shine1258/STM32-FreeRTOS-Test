@@ -4,35 +4,52 @@
 #include <stdio.h>
 
 osSemaphoreId_t semaphore;
+uint8_t byteBuffer;
+uint8_t* bytesToRead;
+uint16_t lengthToRead;
+uint16_t readedLength = 0;
 
 void Serial_Init(void)
 {
     semaphore = osSemaphoreNew(1, 0, NULL);
+    HAL_UART_Receive_IT(&huart1, &byteBuffer, 1);
 }
 
 void Serial_WriteBytes(uint8_t* bytes, uint16_t length)
 {
-    HAL_UART_Transmit(&huart1, bytes, length, 1000);
+    HAL_UART_Transmit(&huart1, bytes, length, 0xFFFF);
 }
 
-void Serial_ReadBytes(uint8_t* bytes, uint16_t length, uint32_t timeout)
+SerialStatus_t Serial_ReadBytes(uint8_t* bytes, uint16_t length, uint32_t timeout)
 {
-    osMessageQueueReset(semaphore);
-    HAL_UART_Receive_IT(&huart1, bytes, length);
-    osStatus_t result = osSemaphoreAcquire(semaphore, timeout);
+    if (bytesToRead)
+        return SERIAL_ERROR;
 
-    if (result == osOK) {
-        printf("Serial_ReadBytes: %s\r\n", bytes);
-    } else {
-        printf("%d\r\n", result);
-        printf("Serial_ReadBytes timeout\r\n");
-    }
+    bytesToRead = bytes;
+    lengthToRead = length;
+
+    osStatus_t status = osSemaphoreAcquire(semaphore, timeout);
+    bytesToRead = NULL;
+
+    if (status == osOK)
+        return SERIAL_OK;
+    else
+        return SERIAL_TIMEOUT;
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart)
 {
     if (huart == &huart1) {
-        osSemaphoreRelease(semaphore);
+        if (bytesToRead) {
+            if (readedLength < lengthToRead) {
+                bytesToRead[readedLength++] = byteBuffer;
+            } else if (readedLength == lengthToRead) {
+                readedLength = 0;
+                osSemaphoreRelease(semaphore);
+            }
+        }
+
+        HAL_UART_Receive_IT(&huart1, &byteBuffer, 1);
     }
 }
 
@@ -46,6 +63,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart)
 
 PUTCHAR_PROTOTYPE
 {
-    HAL_UART_Transmit(&huart1, (uint8_t*)&ch, 1, 0xFFFF);
+    Serial_WriteBytes((uint8_t*)&ch, 1);
     return ch;
 }

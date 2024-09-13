@@ -1,19 +1,4 @@
 {
-    "files.associations": {
-        "stm32f1xx_hal.h": "c",
-        "stdio.h": "c",
-        "list.h": "c",
-        "cmsis_os.h": "c",
-        "key.h": "c",
-        "stm32f1xx.h": "c",
-        "stdlib.h": "c",
-        "stdint.h": "c",
-        "stm32f103xb.h": "c",
-        "task.h": "c",
-        "main.h": "c",
-        "stm32f1xx_hal_conf.h": "c",
-        "assert.h": "c"
-    },
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,
@@ -32,5 +17,12 @@
         "compile_commands.json": true,
         "*.ld": true,
         "*.ioc": true,
+    },
+    "files.associations": {
+        "stdio.h": "c",
+        "tim.h": "c",
+        "main.h": "c",
+        "stm32f1xx_hal.h": "c",
+        "stm32f1xx_hal_def.h": "c"
     }
 }

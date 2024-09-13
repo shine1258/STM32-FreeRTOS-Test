@@ -54,6 +54,7 @@
 /* USER CODE BEGIN Variables */
 
 char buffer[20] = "fdsagfhdshds";
+char runTimeBuffer[200];
 QueueSetHandle_t myQueueSetHandle;
 
 /* USER CODE END Variables */
@@ -267,20 +268,8 @@ void Main_TaskEntry(void* argument)
     /* Infinite loop */
 
     for (;;) {
-        // printf("Stack high water mark of each task:\r\n");
-
-        // UBaseType_t numOfTasks = uxTaskGetNumberOfTasks();
-        // TaskStatus_t* taskStatusArr = pvPortMalloc(numOfTasks * sizeof(TaskStatus_t));
-        // MALLOC_FAILED_CHECK(taskStatusArr);
-        // uxTaskGetSystemState(taskStatusArr, numOfTasks, NULL);
-
-        // for (uint8_t i = 0; i < numOfTasks; i++) {
-        //     printf("%s: %d\r\n", taskStatusArr[i].pcTaskName, taskStatusArr[i].usStackHighWaterMark);
-        // }
-
-        // vPortFree(taskStatusArr);
-
-        // printf("\r\n");
+        vTaskGetRunTimeStats(runTimeBuffer);
+        printf("Run Time Stats:\n%s\n", runTimeBuffer);
         osDelay(5000);
     }
     /* USER CODE END Main_TaskEntry */
@@ -318,7 +307,37 @@ void Task02Entry(void* argument)
     UNUSED(argument);
     /* Infinite loop */
     for (;;) {
-        Serial_ReadBytes((uint8_t*)buffer, 20, 2000);
+        uint32_t totalTimeout = 2000;
+        uint32_t remainTimeout = totalTimeout;
+        uint32_t startTime = osKernelGetTickCount();
+
+        if (Serial_ReadBytes((uint8_t*)buffer, 20, remainTimeout) == SERIAL_TIMEOUT)
+            goto Timeout;
+
+        remainTimeout = totalTimeout - (GetElapsedTickCount(startTime));
+        printf("%ld\r\n", remainTimeout);
+
+        if (Serial_ReadBytes((uint8_t*)buffer, 20, remainTimeout) == SERIAL_TIMEOUT)
+            goto Timeout;
+
+        remainTimeout = totalTimeout - (GetElapsedTickCount(startTime));
+        printf("%ld\r\n", remainTimeout);
+
+        if (Serial_ReadBytes((uint8_t*)buffer, 20, remainTimeout) == SERIAL_TIMEOUT)
+            goto Timeout;
+
+        remainTimeout = totalTimeout - (GetElapsedTickCount(startTime));
+        printf("%ld\r\n", remainTimeout);
+
+        if (Serial_ReadBytes((uint8_t*)buffer, 20, remainTimeout) == SERIAL_TIMEOUT)
+            goto Timeout;
+
+        printf("Success\r\n");
+        osDelay(500);
+        continue;
+
+    Timeout:
+        printf("Timeout\r\n");
     }
     /* USER CODE END Task02Entry */
 }

@@ -1,6 +1,10 @@
 #ifndef __COMMON_H
 #define __COMMON_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 #include <stdio.h>
 
@@ -38,5 +42,10 @@
 #define EVENT_BIT_23 (1 << 23)
 
 void vAssertCalled(uint8_t* file, uint32_t line);
+uint32_t GetElapsedTickCount(uint32_t startTick);
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif /* __COMMON_H */
