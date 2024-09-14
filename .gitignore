@@ -1,6 +1,5 @@
-/build/*
 Backup/
-/cmake/*
+/build/*
 /CMakeFiles/*
 *.ninja
 *.cmake
