@@ -9,7 +9,7 @@ void vAssertCalled(uint8_t* file, uint32_t line)
         ;
 }
 
-uint32_t GetElapsedTickCount(uint32_t startTickCount)
+uint32_t GetExecutionTickCount(uint32_t startTickCount)
 {
     uint32_t currentTickCount = osKernelGetTickCount();
 
