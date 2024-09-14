@@ -1,2 +1,9 @@
-build/
+/build/*
 Backup/
+/cmake/*
+/CMakeFiles/*
+*.ninja
+*.cmake
+CMakeCache.txt
+CMakePresets.json
+compile_commands.json
