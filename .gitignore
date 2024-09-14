@@ -1,8 +1,6 @@
 Backup/
-/build/*
-/CMakeFiles/*
+CMakeFiles/
+build/
 *.ninja
-*.cmake
 CMakeCache.txt
-CMakePresets.json
 compile_commands.json
