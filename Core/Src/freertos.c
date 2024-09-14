@@ -19,9 +19,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "FreeRTOS.h"
-#include "cmsis_os.h"
-#include "main.h"
 #include "task.h"
+#include "main.h"
+#include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -61,85 +61,85 @@ QueueSetHandle_t myQueueSetHandle;
 /* Definitions for Main_Task */
 osThreadId_t Main_TaskHandle;
 const osThreadAttr_t Main_Task_attributes = {
-    .name = "Main_Task",
-    .stack_size = 256 * 4,
-    .priority = (osPriority_t)osPriorityAboveNormal,
+  .name = "Main_Task",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityAboveNormal,
 };
 /* Definitions for Task01 */
 osThreadId_t Task01Handle;
 const osThreadAttr_t Task01_attributes = {
-    .name = "Task01",
-    .stack_size = 256 * 4,
-    .priority = (osPriority_t)osPriorityLow,
+  .name = "Task01",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityLow,
 };
 /* Definitions for Task02 */
 osThreadId_t Task02Handle;
 const osThreadAttr_t Task02_attributes = {
-    .name = "Task02",
-    .stack_size = 256 * 4,
-    .priority = (osPriority_t)osPriorityLow1,
+  .name = "Task02",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityLow1,
 };
 /* Definitions for KeyScan_Task */
 osThreadId_t KeyScan_TaskHandle;
 const osThreadAttr_t KeyScan_Task_attributes = {
-    .name = "KeyScan_Task",
-    .stack_size = 256 * 4,
-    .priority = (osPriority_t)osPriorityLow,
+  .name = "KeyScan_Task",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityLow,
 };
 /* Definitions for Task03 */
 osThreadId_t Task03Handle;
 const osThreadAttr_t Task03_attributes = {
-    .name = "Task03",
-    .stack_size = 256 * 4,
-    .priority = (osPriority_t)osPriorityLow2,
+  .name = "Task03",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityLow2,
 };
 /* Definitions for queue */
 osMessageQueueId_t queueHandle;
 const osMessageQueueAttr_t queue_attributes = {
-    .name = "queue"
+  .name = "queue"
 };
 /* Definitions for bigItemQueue */
 osMessageQueueId_t bigItemQueueHandle;
 const osMessageQueueAttr_t bigItemQueue_attributes = {
-    .name = "bigItemQueue"
+  .name = "bigItemQueue"
 };
 /* Definitions for myMutex01 */
 osMutexId_t myMutex01Handle;
 const osMutexAttr_t myMutex01_attributes = {
-    .name = "myMutex01"
+  .name = "myMutex01"
 };
 /* Definitions for myBinarySem01 */
 osSemaphoreId_t myBinarySem01Handle;
 const osSemaphoreAttr_t myBinarySem01_attributes = {
-    .name = "myBinarySem01"
+  .name = "myBinarySem01"
 };
 /* Definitions for myCountingSem01 */
 osSemaphoreId_t myCountingSem01Handle;
 const osSemaphoreAttr_t myCountingSem01_attributes = {
-    .name = "myCountingSem01"
+  .name = "myCountingSem01"
 };
 /* Definitions for myEvent01 */
 osEventFlagsId_t myEvent01Handle;
 const osEventFlagsAttr_t myEvent01_attributes = {
-    .name = "myEvent01"
+  .name = "myEvent01"
 };
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
 /* USER CODE END FunctionPrototypes */
 
-void Main_TaskEntry(void* argument);
-void Task01Entry(void* argument);
-void Task02Entry(void* argument);
-void KeyScan_TaskEntry(void* argument);
-void Task03Entry(void* argument);
+void Main_TaskEntry(void *argument);
+void Task01Entry(void *argument);
+void Task02Entry(void *argument);
+void KeyScan_TaskEntry(void *argument);
+void Task03Entry(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /* Hook prototypes */
 void configureTimerForRunTimeStats(void);
 unsigned long getRunTimeCounterValue(void);
-void vApplicationStackOverflowHook(xTaskHandle xTask, signed char* pcTaskName);
+void vApplicationStackOverflowHook(xTaskHandle xTask, signed char *pcTaskName);
 
 /* USER CODE BEGIN 1 */
 /* Functions needed when configGENERATE_RUN_TIME_STATS is on */
@@ -161,53 +161,52 @@ void vApplicationStackOverflowHook(xTaskHandle xTask, signed char* pcTaskName)
 /* USER CODE END 4 */
 
 /**
- * @brief  FreeRTOS initialization
- * @param  None
- * @retval None
- */
-void MX_FREERTOS_Init(void)
-{
-    /* USER CODE BEGIN Init */
+  * @brief  FreeRTOS initialization
+  * @param  None
+  * @retval None
+  */
+void MX_FREERTOS_Init(void) {
+  /* USER CODE BEGIN Init */
 
     myQueueSetHandle = xQueueCreateSet(2);
     MALLOC_FAILED_CHECK(myQueueSetHandle);
 
-    /* USER CODE END Init */
-    /* Create the mutex(es) */
-    /* creation of myMutex01 */
-    myMutex01Handle = osMutexNew(&myMutex01_attributes);
+  /* USER CODE END Init */
+  /* Create the mutex(es) */
+  /* creation of myMutex01 */
+  myMutex01Handle = osMutexNew(&myMutex01_attributes);
 
-    /* USER CODE BEGIN RTOS_MUTEX */
+  /* USER CODE BEGIN RTOS_MUTEX */
 
     MALLOC_FAILED_CHECK(myMutex01Handle);
 
-    /* USER CODE END RTOS_MUTEX */
+  /* USER CODE END RTOS_MUTEX */
 
-    /* Create the semaphores(s) */
-    /* creation of myBinarySem01 */
-    myBinarySem01Handle = osSemaphoreNew(1, 0, &myBinarySem01_attributes);
+  /* Create the semaphores(s) */
+  /* creation of myBinarySem01 */
+  myBinarySem01Handle = osSemaphoreNew(1, 0, &myBinarySem01_attributes);
 
-    /* creation of myCountingSem01 */
-    myCountingSem01Handle = osSemaphoreNew(100, 0, &myCountingSem01_attributes);
+  /* creation of myCountingSem01 */
+  myCountingSem01Handle = osSemaphoreNew(100, 0, &myCountingSem01_attributes);
 
-    /* USER CODE BEGIN RTOS_SEMAPHORES */
+  /* USER CODE BEGIN RTOS_SEMAPHORES */
 
     MALLOC_FAILED_CHECK(myBinarySem01Handle);
     MALLOC_FAILED_CHECK(myCountingSem01Handle);
 
-    /* USER CODE END RTOS_SEMAPHORES */
+  /* USER CODE END RTOS_SEMAPHORES */
 
-    /* USER CODE BEGIN RTOS_TIMERS */
-    /* USER CODE END RTOS_TIMERS */
+  /* USER CODE BEGIN RTOS_TIMERS */
+  /* USER CODE END RTOS_TIMERS */
 
-    /* Create the queue(s) */
-    /* creation of queue */
-    queueHandle = osMessageQueueNew(2, sizeof(int8_t), &queue_attributes);
+  /* Create the queue(s) */
+  /* creation of queue */
+  queueHandle = osMessageQueueNew (2, sizeof(int8_t), &queue_attributes);
 
-    /* creation of bigItemQueue */
-    bigItemQueueHandle = osMessageQueueNew(1, sizeof(char*), &bigItemQueue_attributes);
+  /* creation of bigItemQueue */
+  bigItemQueueHandle = osMessageQueueNew (1, sizeof(char *), &bigItemQueue_attributes);
 
-    /* USER CODE BEGIN RTOS_QUEUES */
+  /* USER CODE BEGIN RTOS_QUEUES */
 
     MALLOC_FAILED_CHECK(queueHandle);
     MALLOC_FAILED_CHECK(bigItemQueueHandle);
@@ -215,25 +214,25 @@ void MX_FREERTOS_Init(void)
     xQueueAddToSet(queueHandle, myQueueSetHandle);
     xQueueAddToSet(myBinarySem01Handle, myQueueSetHandle);
 
-    /* USER CODE END RTOS_QUEUES */
+  /* USER CODE END RTOS_QUEUES */
 
-    /* Create the thread(s) */
-    /* creation of Main_Task */
-    Main_TaskHandle = osThreadNew(Main_TaskEntry, NULL, &Main_Task_attributes);
+  /* Create the thread(s) */
+  /* creation of Main_Task */
+  Main_TaskHandle = osThreadNew(Main_TaskEntry, NULL, &Main_Task_attributes);
 
-    /* creation of Task01 */
-    Task01Handle = osThreadNew(Task01Entry, NULL, &Task01_attributes);
+  /* creation of Task01 */
+  Task01Handle = osThreadNew(Task01Entry, NULL, &Task01_attributes);
 
-    /* creation of Task02 */
-    Task02Handle = osThreadNew(Task02Entry, NULL, &Task02_attributes);
+  /* creation of Task02 */
+  Task02Handle = osThreadNew(Task02Entry, NULL, &Task02_attributes);
 
-    /* creation of KeyScan_Task */
-    KeyScan_TaskHandle = osThreadNew(KeyScan_TaskEntry, NULL, &KeyScan_Task_attributes);
+  /* creation of KeyScan_Task */
+  KeyScan_TaskHandle = osThreadNew(KeyScan_TaskEntry, NULL, &KeyScan_Task_attributes);
 
-    /* creation of Task03 */
-    Task03Handle = osThreadNew(Task03Entry, NULL, &Task03_attributes);
+  /* creation of Task03 */
+  Task03Handle = osThreadNew(Task03Entry, NULL, &Task03_attributes);
 
-    /* USER CODE BEGIN RTOS_THREADS */
+  /* USER CODE BEGIN RTOS_THREADS */
 
     MALLOC_FAILED_CHECK(Main_TaskHandle);
     MALLOC_FAILED_CHECK(Task01Handle);
@@ -241,16 +240,17 @@ void MX_FREERTOS_Init(void)
     MALLOC_FAILED_CHECK(KeyScan_TaskHandle);
     MALLOC_FAILED_CHECK(Task03Handle);
 
-    /* USER CODE END RTOS_THREADS */
+  /* USER CODE END RTOS_THREADS */
 
-    /* creation of myEvent01 */
-    myEvent01Handle = osEventFlagsNew(&myEvent01_attributes);
+  /* creation of myEvent01 */
+  myEvent01Handle = osEventFlagsNew(&myEvent01_attributes);
 
-    /* USER CODE BEGIN RTOS_EVENTS */
+  /* USER CODE BEGIN RTOS_EVENTS */
 
     MALLOC_FAILED_CHECK(myEvent01Handle);
 
-    /* USER CODE END RTOS_EVENTS */
+  /* USER CODE END RTOS_EVENTS */
+
 }
 
 /* USER CODE BEGIN Header_Main_TaskEntry */
@@ -260,9 +260,9 @@ void MX_FREERTOS_Init(void)
  * @retval None
  */
 /* USER CODE END Header_Main_TaskEntry */
-void Main_TaskEntry(void* argument)
+void Main_TaskEntry(void *argument)
 {
-    /* USER CODE BEGIN Main_TaskEntry */
+  /* USER CODE BEGIN Main_TaskEntry */
     UNUSED(argument);
 
     /* Infinite loop */
@@ -272,7 +272,7 @@ void Main_TaskEntry(void* argument)
         // printf("Run Time Stats:\n%s\n", runTimeBuffer);
         osDelay(5000);
     }
-    /* USER CODE END Main_TaskEntry */
+  /* USER CODE END Main_TaskEntry */
 }
 
 /* USER CODE BEGIN Header_Task01Entry */
@@ -282,16 +282,16 @@ void Main_TaskEntry(void* argument)
  * @retval None
  */
 /* USER CODE END Header_Task01Entry */
-void Task01Entry(void* argument)
+void Task01Entry(void *argument)
 {
-    /* USER CODE BEGIN Task01Entry */
+  /* USER CODE BEGIN Task01Entry */
     UNUSED(argument);
     /* Infinite loop */
     for (;;) {
         osThreadFlagsWait(BIT_0, osFlagsWaitAny, osWaitForever);
         printf("Flag received\r\n");
     }
-    /* USER CODE END Task01Entry */
+  /* USER CODE END Task01Entry */
 }
 
 /* USER CODE BEGIN Header_Task02Entry */
@@ -301,9 +301,9 @@ void Task01Entry(void* argument)
  * @retval None
  */
 /* USER CODE END Header_Task02Entry */
-void Task02Entry(void* argument)
+void Task02Entry(void *argument)
 {
-    /* USER CODE BEGIN Task02Entry */
+  /* USER CODE BEGIN Task02Entry */
     UNUSED(argument);
     /* Infinite loop */
     for (;;) {
@@ -341,7 +341,7 @@ void Task02Entry(void* argument)
     Timeout:
         printf("Timeout\r\n");
     }
-    /* USER CODE END Task02Entry */
+  /* USER CODE END Task02Entry */
 }
 
 /* USER CODE BEGIN Header_KeyScan_TaskEntry */
@@ -351,9 +351,9 @@ void Task02Entry(void* argument)
  * @retval None
  */
 /* USER CODE END Header_KeyScan_TaskEntry */
-void KeyScan_TaskEntry(void* argument)
+void KeyScan_TaskEntry(void *argument)
 {
-    /* USER CODE BEGIN KeyScan_TaskEntry */
+  /* USER CODE BEGIN KeyScan_TaskEntry */
     UNUSED(argument);
 
     /* Infinite loop */
@@ -377,7 +377,7 @@ void KeyScan_TaskEntry(void* argument)
 
         osDelay(10);
     }
-    /* USER CODE END KeyScan_TaskEntry */
+  /* USER CODE END KeyScan_TaskEntry */
 }
 
 /* USER CODE BEGIN Header_Task03Entry */
@@ -387,17 +387,18 @@ void KeyScan_TaskEntry(void* argument)
  * @retval None
  */
 /* USER CODE END Header_Task03Entry */
-void Task03Entry(void* argument)
+void Task03Entry(void *argument)
 {
-    /* USER CODE BEGIN Task03Entry */
+  /* USER CODE BEGIN Task03Entry */
     UNUSED(argument);
     /* Infinite loop */
     for (;;) {
         osDelay(1);
     }
-    /* USER CODE END Task03Entry */
+  /* USER CODE END Task03Entry */
 }
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
 /* USER CODE END Application */
+

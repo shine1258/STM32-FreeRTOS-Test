@@ -1,4 +1,4 @@
-# Install script for directory: D:/Documents/Projects/Study/STM32/FreeRTOS Study/Test/cmake/stm32cubemx
+# Install script for directory: D:/Study/STM32/FreeRTOS_Test/cmake/stm32cubemx
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

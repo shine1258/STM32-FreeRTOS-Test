@@ -98,7 +98,7 @@ int main(void)
 
     Serial_Init();
 
-    // 修复复位后立即进入定时器中断的问题
+    // 修复复位后立即进入定时器中断的问�?
     __HAL_TIM_CLEAR_FLAG(&htim2, TIM_FLAG_UPDATE);
     __HAL_TIM_CLEAR_FLAG(&htim3, TIM_FLAG_UPDATE);
 

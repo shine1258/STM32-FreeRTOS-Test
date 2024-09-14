@@ -1,4 +1,4 @@
-# Install script for directory: D:/Documents/Projects/Study/STM32/FreeRTOS Study/Test
+# Install script for directory: D:/Study/STM32/FreeRTOS_Test
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,7 +39,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("D:/Documents/Projects/Study/STM32/FreeRTOS Study/Test/cmake/stm32cubemx/cmake_install.cmake")
+  include("D:/Study/STM32/FreeRTOS_Test/cmake/stm32cubemx/cmake_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "D:/Documents/Projects/Study/STM32/FreeRTOS Study/Test/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "D:/Study/STM32/FreeRTOS_Test/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
