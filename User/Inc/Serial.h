@@ -16,6 +16,7 @@ typedef enum {
 void Serial_Init(void);
 void Serial_WriteBytes(uint8_t* bytes, uint16_t length);
 SerialStatus_t Serial_ReadBytes(uint8_t* bytes, uint16_t length, uint32_t timeout);
+void Serial_ClearReadBuffer(void);
 
 #ifdef __cplusplus
 }

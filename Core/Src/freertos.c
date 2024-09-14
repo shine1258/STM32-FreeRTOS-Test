@@ -268,8 +268,8 @@ void Main_TaskEntry(void* argument)
     /* Infinite loop */
 
     for (;;) {
-        vTaskGetRunTimeStats(runTimeBuffer);
-        printf("Run Time Stats:\n%s\n", runTimeBuffer);
+        // vTaskGetRunTimeStats(runTimeBuffer);
+        // printf("Run Time Stats:\n%s\n", runTimeBuffer);
         osDelay(5000);
     }
     /* USER CODE END Main_TaskEntry */
@@ -288,7 +288,7 @@ void Task01Entry(void* argument)
     UNUSED(argument);
     /* Infinite loop */
     for (;;) {
-        osThreadFlagsWait(EVENT_BIT_0, osFlagsWaitAny, osWaitForever);
+        osThreadFlagsWait(BIT_0, osFlagsWaitAny, osWaitForever);
         printf("Flag received\r\n");
     }
     /* USER CODE END Task01Entry */
@@ -307,6 +307,8 @@ void Task02Entry(void* argument)
     UNUSED(argument);
     /* Infinite loop */
     for (;;) {
+        Serial_ClearReadBuffer();
+
         uint32_t totalTimeout = 2000;
         uint32_t remainTimeout = totalTimeout;
         uint32_t startTime = osKernelGetTickCount();
@@ -363,10 +365,10 @@ void KeyScan_TaskEntry(void* argument)
 
             switch (keyNum) {
             case 1:
-                osThreadFlagsSet(Task01Handle, EVENT_BIT_0);
+                osThreadFlagsSet(Task01Handle, BIT_0);
                 break;
             case 2:
-                osEventFlagsSet(myEvent01Handle, EVENT_BIT_1);
+                osEventFlagsSet(myEvent01Handle, BIT_1);
                 break;
             default:
                 break;
