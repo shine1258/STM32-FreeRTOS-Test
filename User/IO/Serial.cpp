@@ -30,7 +30,7 @@ Serial::~Serial(void)
 /// @param bytes 待发送的字节数组
 /// @param length 数组长度
 /// @return 状态值
-Serial::Status Serial::writeBytes(uint8_t* bytes, uint16_t length)
+Serial::Status Serial::writeBytes(const uint8_t* bytes, const uint16_t& length)
 {
     if (!bytes || length == 0)
         return Status::ERROR;
@@ -45,7 +45,7 @@ Serial::Status Serial::writeBytes(uint8_t* bytes, uint16_t length)
 /// @param length 数组长度
 /// @param timeout 超时时间
 /// @return 状态值
-Serial::Status Serial::readBytes(uint8_t* bytes, uint16_t length, uint32_t timeout)
+Serial::Status Serial::readBytes(uint8_t* bytes, const uint16_t& length, const uint32_t& timeout)
 {
     if (isReading || length == 0 || !bytes)
         return Status::ERROR;

@@ -17,7 +17,6 @@ void CommunicationTask_Run(void)
     uint32_t totalTimeout = 2000;
 
     while (true) {
-
         Serial.clearReadBuffer();
 
         uint32_t remainTimeout = totalTimeout;
