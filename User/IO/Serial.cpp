@@ -13,14 +13,14 @@ static osMessageQueueId_t readBuffer;
 static uint8_t aRead;
 static bool isReading = false;
 
-Serial::Serial(void)
+Serial::Serial()
 {
     readBuffer = osMessageQueueNew(readBufferSize, sizeof(uint8_t), NULL);
     MALLOC_FAILED_CHECK(readBuffer);
     HAL_UART_Receive_IT(&huart1, &aRead, readOnceCount);
 }
 
-Serial::~Serial(void)
+Serial::~Serial()
 {
     osMessageQueueDelete(readBuffer);
     HAL_UART_Abort_IT(&huart1);
