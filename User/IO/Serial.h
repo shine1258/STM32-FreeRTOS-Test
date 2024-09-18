@@ -20,8 +20,8 @@ public:
         ERROR = 2
     };
 
-    Status writeBytes(const uint8_t* bytes, const uint16_t& length);
-    Status readBytes(uint8_t* bytes, const uint16_t& length, const uint32_t& timeout);
+    Status writeBytes(const uint8_t* bytes, const uint16_t length);
+    Status readBytes(uint8_t* bytes, const uint16_t length, const uint32_t timeout);
     void clearReadBuffer();
 
 private:
