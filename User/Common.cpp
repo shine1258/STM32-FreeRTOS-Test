@@ -19,3 +19,21 @@ uint32_t GetExecutionTickCount(uint32_t startTickCount)
         return (UINT32_MAX - startTickCount) + currentTickCount + 1;
     }
 }
+
+void* operator new(size_t size)
+{
+    printf("new(%d)\r\n", size);
+    return pvPortMalloc(size);
+}
+
+void operator delete(void* ptr)
+{
+    printf("delete(%p)\r\n", ptr);
+    vPortFree(ptr);
+}
+
+void operator delete(void* ptr, size_t size)
+{
+    printf("delete(%p, %d)\r\n", ptr, size);
+    vPortFree(ptr);
+}

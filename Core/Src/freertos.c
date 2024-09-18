@@ -27,8 +27,9 @@
 /* USER CODE BEGIN Includes */
 
 #include "Common.h"
+#include "CommunicationTask.h"
 #include "Key.h"
-#include "Serial.h"
+#include "PrintRunTimeStatsTask.h"
 #include "event_groups.h"
 #include "queue.h"
 #include <stdio.h>
@@ -52,10 +53,6 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-
-char buffer[100];
-char runTimeBuffer[200];
-QueueSetHandle_t myQueueSetHandle;
 
 /* USER CODE END Variables */
 /* Definitions for Main_Task */
@@ -169,9 +166,6 @@ void MX_FREERTOS_Init(void)
 {
     /* USER CODE BEGIN Init */
 
-    myQueueSetHandle = xQueueCreateSet(2);
-    MALLOC_FAILED_CHECK(myQueueSetHandle);
-
     /* USER CODE END Init */
     /* Create the mutex(es) */
     /* creation of myMutex01 */
@@ -211,9 +205,6 @@ void MX_FREERTOS_Init(void)
 
     MALLOC_FAILED_CHECK(queueHandle);
     MALLOC_FAILED_CHECK(bigItemQueueHandle);
-
-    xQueueAddToSet(queueHandle, myQueueSetHandle);
-    xQueueAddToSet(myBinarySem01Handle, myQueueSetHandle);
 
     /* USER CODE END RTOS_QUEUES */
 
@@ -287,11 +278,9 @@ void Task01Entry(void* argument)
 {
     /* USER CODE BEGIN Task01Entry */
     UNUSED(argument);
+    PrintRunTimeStatsTask_Run();
     /* Infinite loop */
-    for (;;) {
-        osThreadFlagsWait(BIT_0, osFlagsWaitAny, osWaitForever);
-        printf("Flag received\r\n");
-    }
+    for (;;) { }
     /* USER CODE END Task01Entry */
 }
 
@@ -306,32 +295,10 @@ void Task02Entry(void* argument)
 {
     /* USER CODE BEGIN Task02Entry */
     UNUSED(argument);
+    CommunicationTask_Run();
+
     /* Infinite loop */
-    for (;;) {
-        Serial_ClearReadBuffer();
-
-        uint32_t totalTimeout = 2000;
-        uint32_t remainTimeout = totalTimeout;
-        uint32_t startTime = osKernelGetTickCount();
-        uint16_t onceLength = 10;
-        uint8_t repeat = 4;
-
-        buffer[repeat * onceLength] = '\0';
-
-        for (uint8_t i = 0; i < repeat; i++) {
-            if (Serial_ReadBytes((uint8_t*)(buffer + i * onceLength), onceLength, remainTimeout) == SERIAL_TIMEOUT)
-                goto Timeout;
-
-            remainTimeout = totalTimeout - (GetExecutionTickCount(startTime));
-        }
-
-        printf("Received: %s\r\n", buffer);
-        osDelay(500);
-        continue;
-
-    Timeout:
-        printf("Timeout\r\n");
-    }
+    for (;;) { }
     /* USER CODE END Task02Entry */
 }
 

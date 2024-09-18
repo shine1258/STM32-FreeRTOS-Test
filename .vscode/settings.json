@@ -27,6 +27,7 @@
         "usart.h": "c",
         "cmsis_os.h": "c",
         "string.h": "c",
-        "common.h": "c"
+        "common.h": "c",
+        "vector": "cpp"
     }
 }

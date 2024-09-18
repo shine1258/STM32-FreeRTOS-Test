@@ -12,6 +12,9 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS ON)
 
 # Define the build type
 if(NOT CMAKE_BUILD_TYPE)
@@ -48,15 +51,19 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
-    User/Src/Key.c
-    User/Src/Common.c
-    User/Src/Serial.c
+    User/Common.cpp
+    User/IO/Key.c
+    User/IO/Serial.cpp
+    User/Tasks/CommunicationTask.cpp
+    User/Tasks/PrintRunTimeStatsTask.cpp
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
-    User/Inc
+    User
+    User/IO
+    User/Tasks
 )
 
 # Add project symbols (macros)
