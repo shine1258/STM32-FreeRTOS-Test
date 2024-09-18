@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-void PrintRunTimeStatsTask_Run(void);
+void PrintSystemStateTask_Run(void);
 
 #ifdef __cplusplus
 }

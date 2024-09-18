@@ -7,18 +7,17 @@
 
 namespace IO {
 
-constexpr uint8_t READ_ONCE_COUNT = 1;
-constexpr uint16_t READ_BUFFER_SIZE = 256;
-
+static constexpr uint8_t readOnceCount = 1;
+static constexpr uint16_t readBufferSize = 256;
 static osMessageQueueId_t readBuffer;
 static uint8_t aRead;
 static bool isReading = false;
 
 Serial::Serial(void)
 {
-    readBuffer = osMessageQueueNew(READ_BUFFER_SIZE, sizeof(uint8_t), NULL);
+    readBuffer = osMessageQueueNew(readBufferSize, sizeof(uint8_t), NULL);
     MALLOC_FAILED_CHECK(readBuffer);
-    HAL_UART_Receive_IT(&huart1, &aRead, READ_ONCE_COUNT);
+    HAL_UART_Receive_IT(&huart1, &aRead, readOnceCount);
 }
 
 Serial::~Serial(void)
@@ -27,18 +26,29 @@ Serial::~Serial(void)
     HAL_UART_Abort_IT(&huart1);
 }
 
-void Serial::writeBytes(uint8_t* bytes, uint16_t length)
+/// @brief 发送字节数组
+/// @param bytes 待发送的字节数组
+/// @param length 数组长度
+/// @return 状态值
+Serial::Status Serial::writeBytes(uint8_t* bytes, uint16_t length)
 {
+    if (!bytes || length == 0)
+        return Status::ERROR;
+
     HAL_UART_Transmit(&huart1, bytes, length, 0xFFFF);
+
+    return Status::OK;
 }
 
-SerialResult Serial::readBytes(uint8_t* bytes, uint16_t length, uint32_t timeout)
+/// @brief 读取字节数组
+/// @param bytes 待接收的字节数组
+/// @param length 数组长度
+/// @param timeout 超时时间
+/// @return 状态值
+Serial::Status Serial::readBytes(uint8_t* bytes, uint16_t length, uint32_t timeout)
 {
-    if (isReading)
-        return SerialResult::ERROR;
-
-    if (length == 0)
-        return SerialResult::ERROR;
+    if (isReading || length == 0 || !bytes)
+        return Status::ERROR;
 
     isReading = true;
 
@@ -56,12 +66,13 @@ SerialResult Serial::readBytes(uint8_t* bytes, uint16_t length, uint32_t timeout
     isReading = false;
 
     if (status == osStatus_t::osOK)
-        return SerialResult::OK;
+        return Status::OK;
     else
-        return SerialResult::TIMEOUT;
+        return Status::TIMEOUT;
 }
 
-void Serial::clearReadBuffer(void)
+/// @brief 清空读缓冲区
+void Serial::clearReadBuffer()
 {
     osMessageQueueReset(readBuffer);
 }
@@ -73,24 +84,15 @@ extern "C" {
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart)
 {
     if (huart == &huart1) {
-        if (osMessageQueueGetCount(readBuffer) == READ_BUFFER_SIZE) {
+        if (osMessageQueueGetCount(readBuffer) == readBufferSize) {
             uint8_t temp;
             osMessageQueueGet(readBuffer, &temp, NULL, 0);
         }
 
         osMessageQueuePut(readBuffer, &aRead, 0, 0);
-        HAL_UART_Receive_IT(&huart1, &aRead, READ_ONCE_COUNT);
+        HAL_UART_Receive_IT(&huart1, &aRead, readOnceCount);
     }
-
-#ifdef __cplusplus
 }
-#endif
-
-} // namespace IO
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #ifdef __GNUC__
 
@@ -110,4 +112,4 @@ PUTCHAR_PROTOTYPE
 }
 #endif
 
-}
+} // namespace IO

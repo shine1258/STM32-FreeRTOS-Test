@@ -6,12 +6,6 @@
 
 namespace IO {
 
-enum class SerialResult {
-    OK = 0,
-    TIMEOUT = 1,
-    ERROR = 2
-};
-
 class Serial {
 public:
     static Serial& instance()
@@ -20,8 +14,14 @@ public:
         return instance;
     }
 
-    void writeBytes(uint8_t* bytes, uint16_t length);
-    SerialResult readBytes(uint8_t* bytes, uint16_t length, uint32_t timeout);
+    enum class Status {
+        OK = 0,
+        TIMEOUT = 1,
+        ERROR = 2
+    };
+
+    Status writeBytes(uint8_t* bytes, uint16_t length);
+    Status readBytes(uint8_t* bytes, uint16_t length, uint32_t timeout);
     void clearReadBuffer();
 
 private:

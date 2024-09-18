@@ -6,11 +6,10 @@
 
 using namespace IO;
 
-constexpr uint8_t bufferSize = 40;
-constexpr uint8_t readOnceCount = 10;
-constexpr uint8_t repeat = bufferSize / readOnceCount;
-
-char buffer[bufferSize];
+static constexpr uint8_t bufferSize = 40;
+static constexpr uint8_t readOnceCount = 10;
+static constexpr uint8_t repeat = bufferSize / readOnceCount;
+static char buffer[bufferSize];
 
 void CommunicationTask_Run(void)
 {
@@ -27,18 +26,17 @@ void CommunicationTask_Run(void)
         buffer[bufferSize] = '\0';
 
         for (uint8_t i = 0; i < repeat; i++) {
-            if (Serial.readBytes((uint8_t*)(buffer + i * readOnceCount), readOnceCount, remainTimeout) == SerialResult::TIMEOUT) {
+            if (Serial.readBytes((uint8_t*)(buffer + i * readOnceCount), readOnceCount, remainTimeout) == Serial::Status::TIMEOUT) {
                 goto Timeout;
             }
 
             remainTimeout = totalTimeout - (GetExecutionTickCount(startTime));
         }
 
-        printf("Received: %s\r\n", buffer);
         osDelay(500);
         continue;
 
     Timeout:
-        printf("Timeout\r\n");
+        continue;
     }
 }

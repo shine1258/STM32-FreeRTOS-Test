@@ -28,6 +28,7 @@
         "cmsis_os.h": "c",
         "string.h": "c",
         "common.h": "c",
-        "vector": "cpp"
+        "vector": "cpp",
+        "stdint.h": "c"
     }
 }

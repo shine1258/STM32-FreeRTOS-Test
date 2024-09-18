@@ -3,7 +3,7 @@
 #include "cmsis_os.h"
 #include "main.h"
 
-const struct {
+static const struct {
     GPIO_TypeDef* GPIOx;
     uint16_t GPIO_Pin;
     uint8_t keyNum;

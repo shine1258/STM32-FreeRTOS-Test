@@ -55,7 +55,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     User/IO/Key.c
     User/IO/Serial.cpp
     User/Tasks/CommunicationTask.cpp
-    User/Tasks/PrintRunTimeStatsTask.cpp
+    User/Tasks/PrintSystemStateTask.cpp
 )
 
 # Add include paths
