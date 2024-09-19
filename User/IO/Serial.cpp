@@ -1,36 +1,30 @@
-#include "Serial.h"
+#include "Serial.hpp"
 #include "Common.h"
 #include "cmsis_os.h"
 #include "usart.h"
-#include <stdio.h>
-#include <string.h>
 
-namespace IO {
+namespace IO::Serial {
 
 static constexpr uint8_t readOnceCount = 1;
 static constexpr uint16_t readBufferSize = 256;
+static bool isReading;
+static bool isInited;
 static osMessageQueueId_t readBuffer;
 static uint8_t aRead;
-static bool isReading = false;
+static void init();
 
-Serial::Serial()
+static void init()
 {
-    readBuffer = osMessageQueueNew(readBufferSize, sizeof(uint8_t), NULL);
+    readBuffer = osMessageQueueNew(readBufferSize, sizeof(uint8_t), nullptr);
     MALLOC_FAILED_CHECK(readBuffer);
     HAL_UART_Receive_IT(&huart1, &aRead, readOnceCount);
-}
-
-Serial::~Serial()
-{
-    osMessageQueueDelete(readBuffer);
-    HAL_UART_Abort_IT(&huart1);
 }
 
 /// @brief 发送字节数组
 /// @param bytes 待发送的字节数组
 /// @param length 数组长度
 /// @return 状态值
-Serial::Status Serial::writeBytes(const uint8_t* bytes, const uint16_t length)
+Status writeBytes(const uint8_t* bytes, const uint16_t length)
 {
     if (!bytes || length == 0)
         return Status::ERROR;
@@ -45,20 +39,25 @@ Serial::Status Serial::writeBytes(const uint8_t* bytes, const uint16_t length)
 /// @param length 数组长度
 /// @param timeout 超时时间
 /// @return 状态值
-Serial::Status Serial::readBytes(uint8_t* bytes, const uint16_t length, const uint32_t timeout)
+Status readBytes(uint8_t* bytes, const uint16_t length, const uint32_t timeout)
 {
     if (isReading || length == 0 || !bytes)
         return Status::ERROR;
+
+    if (!isInited) {
+        init();
+        isInited = true;
+    }
 
     isReading = true;
 
     osStatus_t status = osStatus_t::osOK;
     uint32_t remainTimeout = timeout;
-    uint32_t startTime = osKernelGetTickCount();
     uint16_t readedLength = 0;
+    auto startTime = osKernelGetTickCount();
 
     while (readedLength < length && status == osStatus_t::osOK) {
-        status = osMessageQueueGet(readBuffer, bytes + readedLength, NULL, remainTimeout);
+        status = osMessageQueueGet(readBuffer, bytes + readedLength, nullptr, remainTimeout);
         readedLength++;
         remainTimeout = timeout - (GetExecutionTickCount(startTime));
     }
@@ -72,7 +71,7 @@ Serial::Status Serial::readBytes(uint8_t* bytes, const uint16_t length, const ui
 }
 
 /// @brief 清空读缓冲区
-void Serial::clearReadBuffer()
+void clearReadBuffer()
 {
     osMessageQueueReset(readBuffer);
 }
@@ -86,7 +85,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart)
     if (huart == &huart1) {
         if (osMessageQueueGetCount(readBuffer) == readBufferSize) {
             uint8_t temp;
-            osMessageQueueGet(readBuffer, &temp, NULL, 0);
+            osMessageQueueGet(readBuffer, &temp, nullptr, 0);
         }
 
         osMessageQueuePut(readBuffer, &aRead, 0, 0);
@@ -104,7 +103,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart)
 
 PUTCHAR_PROTOTYPE
 {
-    Serial::instance().writeBytes((uint8_t*)&ch, 1);
+    writeBytes((uint8_t*)&ch, 1);
     return ch;
 }
 

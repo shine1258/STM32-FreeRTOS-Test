@@ -54,6 +54,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     User/Common.cpp
     User/IO/Key.c
     User/IO/Serial.cpp
+    User/Tasks/MainTask.cpp
     User/Tasks/CommunicationTask.cpp
     User/Tasks/PrintSystemStateTask.cpp
 )

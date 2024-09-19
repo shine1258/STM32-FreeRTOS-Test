@@ -29,6 +29,7 @@
 #include "Common.h"
 #include "CommunicationTask.h"
 #include "Key.h"
+#include "MainTask.h"
 #include "PrintSystemStateTask.h"
 #include "event_groups.h"
 #include "queue.h"
@@ -203,13 +204,10 @@ void Main_TaskEntry(void* argument)
 {
     /* USER CODE BEGIN Main_TaskEntry */
     UNUSED(argument);
-
+    MainTask_Run();
     /* Infinite loop */
 
     for (;;) {
-        // vTaskGetRunTimeStats(runTimeBuffer);
-        // printf("Run Time Stats:\n%s\n", runTimeBuffer);
-        HAL_GPIO_TogglePin(RGB_BLUE_GPIO_Port, RGB_BLUE_Pin);
         osDelay(5000);
     }
     /* USER CODE END Main_TaskEntry */
@@ -226,7 +224,7 @@ void Task01Entry(void* argument)
 {
     /* USER CODE BEGIN Task01Entry */
     UNUSED(argument);
-    PrintSystemStateTask_Run();
+    // PrintSystemStateTask_Run();
     /* Infinite loop */
     for (;;) { }
     /* USER CODE END Task01Entry */
@@ -264,23 +262,6 @@ void KeyScan_TaskEntry(void* argument)
 
     /* Infinite loop */
     for (;;) {
-        // int8_t keyNum = KeyScan();
-
-        // if (keyNum != -1) {
-        //     printf("Key %d pressed\r\n", keyNum);
-
-        //     switch (keyNum) {
-        //     case 1:
-        //         osThreadFlagsSet(Task01Handle, BIT_0);
-        //         break;
-        //     case 2:
-        //         osEventFlagsSet(myEvent01Handle, BIT_1);
-        //         break;
-        //     default:
-        //         break;
-        //     }
-        // }
-
         osDelay(10);
     }
     /* USER CODE END KeyScan_TaskEntry */

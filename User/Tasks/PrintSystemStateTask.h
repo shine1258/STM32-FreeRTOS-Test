@@ -1,5 +1,5 @@
-#ifndef __PRINT_RUN_TIME_STATS_TASK_H
-#define __PRINT_RUN_TIME_STATS_TASK_H
+#ifndef __PRINT_SYSTEM_STATE_TASK_H
+#define __PRINT_SYSTEM_STATE_TASK_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -11,4 +11,4 @@ void PrintSystemStateTask_Run(void);
 }
 #endif
 
-#endif /* __PRINT_RUN_TIME_STATS_TASK_H */
+#endif /* __PRINT_SYSTEM_STATE_TASK_H */

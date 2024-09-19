@@ -1,6 +1,6 @@
 #include "CommunicationTask.h"
 #include "Common.h"
-#include "Serial.h"
+#include "Serial.hpp"
 #include "cmsis_os.h"
 #include "stdlib.h"
 
@@ -13,19 +13,18 @@ static char buffer[bufferSize];
 
 void CommunicationTask_Run(void)
 {
-    auto& Serial = Serial::instance();
     uint32_t totalTimeout = 2000;
 
     while (true) {
-        Serial.clearReadBuffer();
+        Serial::clearReadBuffer();
 
         uint32_t remainTimeout = totalTimeout;
-        uint32_t startTime = osKernelGetTickCount();
+        auto startTime = osKernelGetTickCount();
 
         buffer[bufferSize] = '\0';
 
         for (uint8_t i = 0; i < repeat; i++) {
-            if (Serial.readBytes((uint8_t*)(buffer + i * readOnceCount), readOnceCount, remainTimeout) == Serial::Status::TIMEOUT) {
+            if (Serial::readBytes((uint8_t*)(buffer + i * readOnceCount), readOnceCount, remainTimeout) == Serial::Status::TIMEOUT) {
                 goto Timeout;
             }
 
