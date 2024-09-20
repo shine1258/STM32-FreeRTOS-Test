@@ -56,10 +56,10 @@
 /* USER CODE BEGIN Variables */
 
 /* USER CODE END Variables */
-/* Definitions for Main_Task */
-osThreadId_t Main_TaskHandle;
-const osThreadAttr_t Main_Task_attributes = {
-    .name = "Main_Task",
+/* Definitions for MainTask */
+osThreadId_t MainTaskHandle;
+const osThreadAttr_t MainTask_attributes = {
+    .name = "MainTask",
     .stack_size = 256 * 4,
     .priority = (osPriority_t)osPriorityAboveNormal,
 };
@@ -77,32 +77,22 @@ const osThreadAttr_t Task02_attributes = {
     .stack_size = 256 * 4,
     .priority = (osPriority_t)osPriorityLow1,
 };
-/* Definitions for KeyScan_Task */
-osThreadId_t KeyScan_TaskHandle;
-const osThreadAttr_t KeyScan_Task_attributes = {
-    .name = "KeyScan_Task",
+/* Definitions for KeyScanTask */
+osThreadId_t KeyScanTaskHandle;
+const osThreadAttr_t KeyScanTask_attributes = {
+    .name = "KeyScanTask",
     .stack_size = 256 * 4,
     .priority = (osPriority_t)osPriorityLow,
-};
-/* Definitions for myBinarySem01 */
-osSemaphoreId_t myBinarySem01Handle;
-const osSemaphoreAttr_t myBinarySem01_attributes = {
-    .name = "myBinarySem01"
-};
-/* Definitions for myCountingSem01 */
-osSemaphoreId_t myCountingSem01Handle;
-const osSemaphoreAttr_t myCountingSem01_attributes = {
-    .name = "myCountingSem01"
 };
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
 /* USER CODE END FunctionPrototypes */
 
-void Main_TaskEntry(void* argument);
+void MainTaskEntry(void* argument);
 void Task01Entry(void* argument);
 void Task02Entry(void* argument);
-void KeyScan_TaskEntry(void* argument);
+void KeyScanTaskEntry(void* argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -145,17 +135,7 @@ void MX_FREERTOS_Init(void)
 
     /* USER CODE END RTOS_MUTEX */
 
-    /* Create the semaphores(s) */
-    /* creation of myBinarySem01 */
-    myBinarySem01Handle = osSemaphoreNew(1, 0, &myBinarySem01_attributes);
-
-    /* creation of myCountingSem01 */
-    myCountingSem01Handle = osSemaphoreNew(100, 0, &myCountingSem01_attributes);
-
     /* USER CODE BEGIN RTOS_SEMAPHORES */
-
-    MALLOC_FAILED_CHECK(myBinarySem01Handle);
-    MALLOC_FAILED_CHECK(myCountingSem01Handle);
 
     /* USER CODE END RTOS_SEMAPHORES */
 
@@ -167,8 +147,8 @@ void MX_FREERTOS_Init(void)
     /* USER CODE END RTOS_QUEUES */
 
     /* Create the thread(s) */
-    /* creation of Main_Task */
-    Main_TaskHandle = osThreadNew(Main_TaskEntry, NULL, &Main_Task_attributes);
+    /* creation of MainTask */
+    MainTaskHandle = osThreadNew(MainTaskEntry, NULL, &MainTask_attributes);
 
     /* creation of Task01 */
     Task01Handle = osThreadNew(Task01Entry, NULL, &Task01_attributes);
@@ -176,15 +156,15 @@ void MX_FREERTOS_Init(void)
     /* creation of Task02 */
     Task02Handle = osThreadNew(Task02Entry, NULL, &Task02_attributes);
 
-    /* creation of KeyScan_Task */
-    KeyScan_TaskHandle = osThreadNew(KeyScan_TaskEntry, NULL, &KeyScan_Task_attributes);
+    /* creation of KeyScanTask */
+    KeyScanTaskHandle = osThreadNew(KeyScanTaskEntry, NULL, &KeyScanTask_attributes);
 
     /* USER CODE BEGIN RTOS_THREADS */
 
-    MALLOC_FAILED_CHECK(Main_TaskHandle);
+    MALLOC_FAILED_CHECK(MainTaskHandle);
     MALLOC_FAILED_CHECK(Task01Handle);
     MALLOC_FAILED_CHECK(Task02Handle);
-    MALLOC_FAILED_CHECK(KeyScan_TaskHandle);
+    MALLOC_FAILED_CHECK(KeyScanTaskHandle);
 
     /* USER CODE END RTOS_THREADS */
 
@@ -193,24 +173,23 @@ void MX_FREERTOS_Init(void)
     /* USER CODE END RTOS_EVENTS */
 }
 
-/* USER CODE BEGIN Header_Main_TaskEntry */
+/* USER CODE BEGIN Header_MainTaskEntry */
 /**
- * @brief  Function implementing the Main_Task thread.
+ * @brief  Function implementing the MainTask thread.
  * @param  argument: Not used
  * @retval None
  */
-/* USER CODE END Header_Main_TaskEntry */
-void Main_TaskEntry(void* argument)
+/* USER CODE END Header_MainTaskEntry */
+__weak void MainTaskEntry(void* argument)
 {
-    /* USER CODE BEGIN Main_TaskEntry */
+    /* USER CODE BEGIN MainTaskEntry */
     UNUSED(argument);
     MainTask_Run();
     /* Infinite loop */
-
     for (;;) {
-        osDelay(5000);
+        osDelay(1);
     }
-    /* USER CODE END Main_TaskEntry */
+    /* USER CODE END MainTaskEntry */
 }
 
 /* USER CODE BEGIN Header_Task01Entry */
@@ -220,7 +199,7 @@ void Main_TaskEntry(void* argument)
  * @retval None
  */
 /* USER CODE END Header_Task01Entry */
-void Task01Entry(void* argument)
+__weak void Task01Entry(void* argument)
 {
     /* USER CODE BEGIN Task01Entry */
     UNUSED(argument);
@@ -237,7 +216,7 @@ void Task01Entry(void* argument)
  * @retval None
  */
 /* USER CODE END Header_Task02Entry */
-void Task02Entry(void* argument)
+__weak void Task02Entry(void* argument)
 {
     /* USER CODE BEGIN Task02Entry */
     UNUSED(argument);
@@ -248,23 +227,22 @@ void Task02Entry(void* argument)
     /* USER CODE END Task02Entry */
 }
 
-/* USER CODE BEGIN Header_KeyScan_TaskEntry */
+/* USER CODE BEGIN Header_KeyScanTaskEntry */
 /**
- * @brief Function implementing the KeyScan_Task thread.
+ * @brief Function implementing the KeyScanTask thread.
  * @param argument: Not used
  * @retval None
  */
-/* USER CODE END Header_KeyScan_TaskEntry */
-void KeyScan_TaskEntry(void* argument)
+/* USER CODE END Header_KeyScanTaskEntry */
+__weak void KeyScanTaskEntry(void* argument)
 {
-    /* USER CODE BEGIN KeyScan_TaskEntry */
+    /* USER CODE BEGIN KeyScanTaskEntry */
     UNUSED(argument);
-
     /* Infinite loop */
     for (;;) {
-        osDelay(10);
+        osDelay(1);
     }
-    /* USER CODE END KeyScan_TaskEntry */
+    /* USER CODE END KeyScanTaskEntry */
 }
 
 /* Private application code --------------------------------------------------*/

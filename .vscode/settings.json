@@ -72,6 +72,13 @@
         "numbers": "cpp",
         "ostream": "cpp",
         "stdexcept": "cpp",
-        "streambuf": "cpp"
+        "streambuf": "cpp",
+        "freertos.h": "c",
+        "bitset": "cpp",
+        "unordered_set": "cpp",
+        "sstream": "cpp",
+        "regex": "cpp",
+        "list": "cpp",
+        "set": "cpp"
     }
 }
