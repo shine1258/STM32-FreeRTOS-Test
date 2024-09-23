@@ -83,3 +83,8 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE
     -Wno-unknown-pragmas
 )
+
+# Add linker options
+target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
+    -u_printf_float
+)

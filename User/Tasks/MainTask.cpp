@@ -1,13 +1,17 @@
 #include "MainTask.h"
+#include "Key.h"
 #include "Serial.hpp"
 #include "cmsis_os.h"
 #include <algorithm>
+#include <functional>
 #include <map>
+#include <memory> // std::make_unique
 #include <set>
 #include <stdint.h>
 #include <stdio.h>
 #include <string>
 #include <type_traits>
+#include <utility> // std::move
 #include <vector>
 
 class Person {
@@ -42,30 +46,57 @@ void setWithCustomTypeTest();
 void mapConstructorAndAssignmentTest();
 void mapInsertAndEraseTest();
 
+std::tuple<double, char, std::string> getStudent(int id)
+{
+    if (id == 0) {
+        return std::make_tuple(3.8, 'A', "Lisa Simpson");
+    } else if (id == 1) {
+        return std::make_tuple(2.9, 'C', "Milhouse Van Houten");
+    } else if (id == 2) {
+        return std::make_tuple(1.7, 'D', "Ralph Wiggum");
+    } else {
+        return std::make_tuple(0.0, 'F', "N/A");
+    }
+}
+
 void MainTask_Run(void)
 {
-    // vectorWithBuiltInTypesTest();
-    // vectorWithCustomTypesTest();
-    // vectorWithCustomTypePointersTest();
-    // vectorWithNestedVectorTest();
-    // stringConstructorTest();
-    // stringAssignmentTest();
-    // stringConcatenationTest();
-    // stringFindTest();
-    // stringReplaceTest();
-    // stringCompareTest();
-    // stringInsertAndEraseTest();
-    // stringSubstrTest();
-    // vectorConstructorTest();
-    // vectorAssignmentTest();
-    // setConstructorAndAssignmentTest();
-    // setFindAndCountTest();
-    // setWithCustomTypeTest();
-    // mapConstructorAndAssignmentTest();
-    // mapInsertAndEraseTest();
+    auto student = getStudent(0);
+    printf("ID: 0, GPA: %.1f, Grade: %c, Name: %s\r\n",
+        std::get<0>(student), std::get<1>(student), std::get<2>(student).c_str());
+
+    double gpa;
+    char grade;
+    std::string name;
+
+    // 元组进行拆包
+    std::tie(gpa, grade, name) = getStudent(1);
+    printf("ID: 1, GPA: %.1f, Grade: %c, Name: %s\r\n", gpa, grade, name.c_str());
+
+#pragma region STL容器测试
+// vectorWithBuiltInTypesTest();
+// vectorWithCustomTypesTest();
+// vectorWithCustomTypePointersTest();
+// vectorWithNestedVectorTest();
+// stringConstructorTest();
+// stringAssignmentTest();
+// stringConcatenationTest();
+// stringFindTest();
+// stringReplaceTest();
+// stringCompareTest();
+// stringInsertAndEraseTest();
+// stringSubstrTest();
+// vectorConstructorTest();
+// vectorAssignmentTest();
+// setConstructorAndAssignmentTest();
+// setFindAndCountTest();
+// setWithCustomTypeTest();
+// mapConstructorAndAssignmentTest();
+// mapInsertAndEraseTest();
+#pragma endregion
 
     while (true) {
-        osDelay(1000);
+        osDelay(1);
     }
 }
 
