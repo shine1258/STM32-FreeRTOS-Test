@@ -78,3 +78,8 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 
     # Add user defined libraries
 )
+
+# Add compiler options
+target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE
+    -Wno-unknown-pragmas
+)

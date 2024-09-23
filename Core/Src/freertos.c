@@ -60,7 +60,7 @@
 osThreadId_t MainTaskHandle;
 const osThreadAttr_t MainTask_attributes = {
     .name = "MainTask",
-    .stack_size = 256 * 4,
+    .stack_size = 512 * 4,
     .priority = (osPriority_t)osPriorityAboveNormal,
 };
 /* Definitions for Task01 */

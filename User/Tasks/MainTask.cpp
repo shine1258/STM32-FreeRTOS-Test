@@ -1,6 +1,8 @@
 #include "MainTask.h"
 #include "Serial.hpp"
+#include "cmsis_os.h"
 #include <algorithm>
+#include <map>
 #include <set>
 #include <stdint.h>
 #include <stdio.h>
@@ -37,6 +39,8 @@ void vectorAssignmentTest();
 void setConstructorAndAssignmentTest();
 void setFindAndCountTest();
 void setWithCustomTypeTest();
+void mapConstructorAndAssignmentTest();
+void mapInsertAndEraseTest();
 
 void MainTask_Run(void)
 {
@@ -56,12 +60,16 @@ void MainTask_Run(void)
     // vectorAssignmentTest();
     // setConstructorAndAssignmentTest();
     // setFindAndCountTest();
-    setWithCustomTypeTest();
+    // setWithCustomTypeTest();
+    // mapConstructorAndAssignmentTest();
+    // mapInsertAndEraseTest();
 
     while (true) {
-        /* code */
+        osDelay(1000);
     }
 }
+
+#pragma region STL容器测试
 
 void printVector(std::vector<int>& v)
 {
@@ -83,6 +91,15 @@ void printSet(std::set<int>& s)
     }
 
     printf("\r\n");
+}
+
+void printMap(std::map<uint32_t, uint32_t>& m)
+{
+    using namespace std;
+
+    for (map<uint32_t, uint32_t>::iterator it = m.begin(); it != m.end(); it++) {
+        printf("%ld: %ld\r\n", it->first, it->second);
+    }
 }
 
 // vector存放内置数据类型测试
@@ -458,3 +475,44 @@ void setWithCustomTypeTest()
         printf("Name: %s, Age: %d\r\n", person.name.c_str(), person.age);
     }
 }
+
+// map构造函数和赋值操作测试
+void mapConstructorAndAssignmentTest()
+{
+    using namespace std;
+
+    map<uint32_t, uint32_t> m1;
+    m1.insert(pair<uint32_t, uint32_t>(1, 10));
+    m1.insert(pair<uint32_t, uint32_t>(2, 10));
+    m1.insert(pair<uint32_t, uint32_t>(3, 10));
+    m1.insert(pair<uint32_t, uint32_t>(4, 10));
+    printMap(m1);
+
+    map<uint32_t, uint32_t> m2(m1);
+    printMap(m2);
+
+    map<uint32_t, uint32_t> m3 = m1;
+    printMap(m3);
+}
+
+// map插入和删除操作测试
+void mapInsertAndEraseTest()
+{
+    using namespace std;
+
+    map<uint32_t, uint32_t> m1;
+    m1.insert(pair<uint32_t, uint32_t>(1, 10));
+    m1.insert(make_pair(2, 20));
+    m1.insert(map<uint32_t, uint32_t>::value_type(3, 30));
+    m1[4] = 40;
+    printMap(m1);
+
+    m1.erase(m1.begin());
+    m1.erase(3); // 删除key为3的元素
+    printMap(m1);
+
+    m1.clear();
+    printMap(m1);
+}
+
+#pragma endregion

@@ -9,18 +9,21 @@ void PrintSystemStateTask_Run(void)
     while (true) {
         auto numberOfTasks = osThreadGetCount();
         auto pxTaskStatusArray = new TaskStatus_t[numberOfTasks];
-        MALLOC_FAILED_CHECK(pxTaskStatusArray);
 
         uxTaskGetSystemState(pxTaskStatusArray, numberOfTasks, nullptr);
 
+        printf("\r\nTask Name : Stack Max\r\n");
+
         for (uint8_t i = 0; i < numberOfTasks; i++) {
-            printf("\t%s: %u\r\n",
+            printf("%s : %d\r\n",
                 pxTaskStatusArray[i].pcTaskName,
                 pxTaskStatusArray[i].usStackHighWaterMark);
         }
 
+        printf("\r\n");
+
         delete[] pxTaskStatusArray;
 
-        osDelay(1000);
+        osDelay(5000);
     }
 }
