@@ -30,20 +30,17 @@ const struct lfs_config cfg
 
 int read(const struct lfs_config* c, lfs_block_t block, lfs_off_t off, void* buffer, lfs_size_t size)
 {
-    SPIF_ReadBlock(&spif, block, (uint8_t*)buffer, size, off);
-    return 0;
+    return !SPIF_ReadBlock(&spif, block, (uint8_t*)buffer, size, off);
 }
 
 int prog(const struct lfs_config* c, lfs_block_t block, lfs_off_t off, const void* buffer, lfs_size_t size)
 {
-    SPIF_WriteBlock(&spif, block, (uint8_t*)buffer, size, off);
-    return 0;
+    return !SPIF_WriteBlock(&spif, block, (uint8_t*)buffer, size, off);
 }
 
 int erase(const struct lfs_config* c, lfs_block_t block)
 {
-    SPIF_EraseBlock(&spif, block);
-    return 0;
+    return !SPIF_EraseBlock(&spif, block);
 }
 
 int sync(const struct lfs_config* c)
