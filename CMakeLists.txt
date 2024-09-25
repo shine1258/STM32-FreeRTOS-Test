@@ -12,7 +12,7 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 
@@ -57,6 +57,10 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     User/Tasks/MainTask.cpp
     User/Tasks/CommunicationTask.cpp
     User/Tasks/PrintSystemStateTask.cpp
+    #Middlewares/Third_Party/cJSON/cJSON.c
+    Middlewares/Third_Party/littlefs/lfs.c
+    Middlewares/Third_Party/littlefs/lfs_util.c
+    Middlewares/Third_Party/littlefs/lfs_port.c
 )
 
 # Add include paths
@@ -65,6 +69,8 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     User
     User/IO
     User/Tasks
+    #Middlewares/Third_Party/cJSON
+    Middlewares/Third_Party/littlefs
 )
 
 # Add project symbols (macros)
@@ -82,9 +88,19 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 # Add compiler options
 target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE
     -Wno-unknown-pragmas
+    -Wno-unused-parameter
 )
 
 # Add linker options
 target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
-    -u_printf_float
+    #-u_printf_float
 )
+
+# 开启编译优化
+if(NOT CMAKE_BUILD_TYPE)
+set(CMAKE_BUILD_TYPE Release)
+endif()
+set(CMAKE_CXX_FLAGS_RELEASE -Ofast)
+ 
+set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -O3  -Wall")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3  -Wall")

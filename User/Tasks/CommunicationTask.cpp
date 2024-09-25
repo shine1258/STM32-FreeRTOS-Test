@@ -28,7 +28,7 @@ void CommunicationTask_Run(void)
                 goto Timeout;
             }
 
-            remainTimeout = totalTimeout - (GetExecutionTickCount(startTime));
+            remainTimeout = totalTimeout - (getExecutionTickCount(startTime));
         }
 
         osDelay(500);

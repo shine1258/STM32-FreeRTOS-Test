@@ -59,7 +59,7 @@ Status readBytes(uint8_t* bytes, const uint16_t length, const uint32_t timeout)
     while (readedLength < length && status == osStatus_t::osOK) {
         status = osMessageQueueGet(readBuffer, bytes + readedLength, nullptr, remainTimeout);
         readedLength++;
-        remainTimeout = timeout - (GetExecutionTickCount(startTime));
+        remainTimeout = timeout - (getExecutionTickCount(startTime));
     }
 
     isReading = false;

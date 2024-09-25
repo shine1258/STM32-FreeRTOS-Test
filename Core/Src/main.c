@@ -19,12 +19,13 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
-#include "tim.h"
+#include "spi.h"
 #include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "Common.h"
 #include <stdio.h>
 /* USER CODE END Includes */
 
@@ -91,16 +92,8 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART1_UART_Init();
-  MX_TIM2_Init();
-  MX_TIM3_Init();
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-
-    // 修复复位后立即进入定时器中断的问题
-    __HAL_TIM_CLEAR_FLAG(&htim2, TIM_FLAG_UPDATE);
-    __HAL_TIM_CLEAR_FLAG(&htim3, TIM_FLAG_UPDATE);
-
-    HAL_TIM_Base_Start_IT(&htim2);
-    HAL_TIM_Base_Start_IT(&htim3);
 
   /* USER CODE END 2 */
 
@@ -204,6 +197,7 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
     /* User can add his own implementation to report the HAL error return state */
+    printf("Error_Handler\r\n");
     __disable_irq();
     while (1) {
     }
