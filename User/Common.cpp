@@ -28,7 +28,6 @@ uint32_t getExecutionTickCount(uint32_t startTickCount)
 void* operator new(size_t size) noexcept
 {
     auto result = pvPortMalloc(size);
-    MALLOC_FAILED_CHECK(result);
     printf("new(%p, %d)\r\n", result, size);
     return result;
 }

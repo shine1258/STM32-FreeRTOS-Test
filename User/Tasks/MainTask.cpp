@@ -1,12 +1,14 @@
 #include "MainTask.h"
 #include "Serial.hpp"
 // #include "cJSON.h"
+#include "Common.h"
 #include "cmsis_os.h"
 #include "lfs.h"
 #include "lfs_port.h"
 #include "spi.h"
 #include "spif.h"
 #include "stm32f1xx.h"
+#include <new>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -17,28 +19,33 @@ void MainTask_Run(void)
     // 初始化w25qxx驱动, 使用软件CS
     SPIF_Init(&spif, &hspi1, SPI1_CS_GPIO_Port, SPI1_CS_Pin);
 
-    // 初始化littleFS文件系统
-    auto err = lfs_mount(&lfs, &cfg);
+    // lfs寿命测试
+    while (true) {
+        auto err = lfs_mount(&lfs, &cfg);
 
-    if (err) {
-        lfs_format(&lfs, &cfg);
-        err = lfs_mount(&lfs, &cfg);
+        if (err) {
+            break;
+            // lfs_format(&lfs, &cfg);
+            // err = lfs_mount(&lfs, &cfg);
+        }
+
+        lfs_file_t file;
+
+        uint32_t boot_count = 0;
+        lfs_file_open(&lfs, &file, "boot_count", LFS_O_RDWR | LFS_O_CREAT);
+        lfs_file_read(&lfs, &file, &boot_count, sizeof(boot_count));
+
+        boot_count++;
+        lfs_file_rewind(&lfs, &file);
+        lfs_file_write(&lfs, &file, &boot_count, sizeof(boot_count));
+
+        lfs_file_close(&lfs, &file);
+        lfs_unmount(&lfs);
+
+        printf("count: %ld\r\n", boot_count);
+
+        osDelay(10);
     }
-
-    lfs_file_t file;
-
-    uint32_t boot_count = 0;
-    lfs_file_open(&lfs, &file, "boot_count", LFS_O_RDWR | LFS_O_CREAT);
-    lfs_file_read(&lfs, &file, &boot_count, sizeof(boot_count));
-
-    boot_count++;
-    lfs_file_rewind(&lfs, &file);
-    lfs_file_write(&lfs, &file, &boot_count, sizeof(boot_count));
-
-    lfs_file_close(&lfs, &file);
-    lfs_unmount(&lfs);
-
-    printf("Boot count: %ld\n", boot_count);
 
     // 重定向cJSON库的内存分配和释放函数
     // static cJSON_Hooks hooks;

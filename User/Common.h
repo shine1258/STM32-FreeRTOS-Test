@@ -10,12 +10,6 @@ extern "C" {
 
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
 
-#define MALLOC_FAILED_CHECK(x)                       \
-    if (!x) {                                        \
-        printf("Failed to create %s\n", #x);         \
-        vAssertCalled((uint8_t*)__FILE__, __LINE__); \
-    }
-
 #define BIT_0 (1 << 0)
 #define BIT_1 (1 << 1)
 #define BIT_2 (1 << 2)

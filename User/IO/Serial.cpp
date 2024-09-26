@@ -16,7 +16,6 @@ static void init();
 static void init()
 {
     readBuffer = osMessageQueueNew(readBufferSize, sizeof(uint8_t), nullptr);
-    MALLOC_FAILED_CHECK(readBuffer);
     HAL_UART_Receive_IT(&huart1, &aRead, readOnceCount);
 }
 
