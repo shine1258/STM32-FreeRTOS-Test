@@ -16,36 +16,32 @@ SPIF_HandleTypeDef spif;
 
 void MainTask_Run(void)
 {
-    // 初始化w25qxx驱动, 使用软件CS
+    // 初始化w25qxx驱动, 需要在挂载文件系统之前执行
     SPIF_Init(&spif, &hspi1, SPI1_CS_GPIO_Port, SPI1_CS_Pin);
 
-    // lfs寿命测试
-    while (true) {
-        auto err = lfs_mount(&lfs, &cfg);
+    // 挂载lfs文件系统
+    auto err = lfs_mount(&lfs, &cfg);
 
-        if (err) {
-            break;
-            // lfs_format(&lfs, &cfg);
-            // err = lfs_mount(&lfs, &cfg);
-        }
-
-        lfs_file_t file;
-
-        uint32_t boot_count = 0;
-        lfs_file_open(&lfs, &file, "boot_count", LFS_O_RDWR | LFS_O_CREAT);
-        lfs_file_read(&lfs, &file, &boot_count, sizeof(boot_count));
-
-        boot_count++;
-        lfs_file_rewind(&lfs, &file);
-        lfs_file_write(&lfs, &file, &boot_count, sizeof(boot_count));
-
-        lfs_file_close(&lfs, &file);
-        lfs_unmount(&lfs);
-
-        printf("count: %ld\r\n", boot_count);
-
-        osDelay(10);
+    // 出错时格式化文件系统并重新挂载
+    if (err) {
+        lfs_format(&lfs, &cfg);
+        lfs_mount(&lfs, &cfg);
     }
+
+    lfs_file_t file;
+
+    uint32_t boot_count = 0;
+    lfs_file_open(&lfs, &file, "boot_count", LFS_O_RDWR | LFS_O_CREAT);
+    lfs_file_read(&lfs, &file, &boot_count, sizeof(boot_count));
+
+    boot_count++;
+    lfs_file_rewind(&lfs, &file);
+    lfs_file_write(&lfs, &file, &boot_count, sizeof(boot_count));
+
+    lfs_file_close(&lfs, &file);
+    lfs_unmount(&lfs);
+
+    printf("count: %ld\r\n", boot_count);
 
     // 重定向cJSON库的内存分配和释放函数
     // static cJSON_Hooks hooks;
